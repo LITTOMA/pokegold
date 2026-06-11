@@ -204,7 +204,13 @@ DisplayDexEntry:
 	ld [hl], $56 ; P.
 	inc hl
 	ld a, [wPokedexStatus]
-	add '1'
+	cp 2
+	jr nc, .page_3_digit
+	add $57 ; 1
+	jr .got_page_digit
+.page_3_digit
+	ld a, $6b ; 3
+.got_page_digit
 	ld [hl], a
 	pop de
 	pop af
