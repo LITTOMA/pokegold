@@ -9083,16 +9083,16 @@ engine.menus.main_menu:70:0	menu	engine/menus/main_menu.asm	70	0	db	NEW GAME@	�
 engine.menus.main_menu:71:0	menu	engine/menus/main_menu.asm	71	0	db	OPTION@	设定
 engine.menus.main_menu:72:0	menu	engine/menus/main_menu.asm	72	0	db	MYSTERY GIFT@	神秘礼物
 engine.menus.main_menu:74:0	menu	engine/menus/main_menu.asm	74	0	db	DEBUG ROOM@	调试房
-engine.menus.main_menu:222:0	menu	engine/menus/main_menu.asm	222	0	db	min.@	分
-engine.menus.main_menu:231:0	menu	engine/menus/main_menu.asm	231	0	db	TIME NOT SET@	时间未设
-engine.menus.main_menu:253:0	menu	engine/menus/main_menu.asm	253	0	db	SUN@	日
-engine.menus.main_menu:254:0	menu	engine/menus/main_menu.asm	254	0	db	MON@	一
-engine.menus.main_menu:255:0	menu	engine/menus/main_menu.asm	255	0	db	TUES@	二
-engine.menus.main_menu:256:0	menu	engine/menus/main_menu.asm	256	0	db	WEDNES@	三
-engine.menus.main_menu:257:0	menu	engine/menus/main_menu.asm	257	0	db	THURS@	四
-engine.menus.main_menu:258:0	menu	engine/menus/main_menu.asm	258	0	db	FRI@	五
-engine.menus.main_menu:259:0	menu	engine/menus/main_menu.asm	259	0	db	SATUR@	六
-engine.menus.main_menu:261:0	menu	engine/menus/main_menu.asm	261	0	db	DAY@	昼
+engine.menus.main_menu:222:0	menu	engine/menus/main_menu.asm	222	0	db	min.@	
+engine.menus.main_menu:231:0	menu	engine/menus/main_menu.asm	231	0	db	TIME NOT SET@	
+engine.menus.main_menu:253:0	menu	engine/menus/main_menu.asm	253	0	db	SUN@	
+engine.menus.main_menu:254:0	menu	engine/menus/main_menu.asm	254	0	db	MON@	
+engine.menus.main_menu:255:0	menu	engine/menus/main_menu.asm	255	0	db	TUES@	
+engine.menus.main_menu:256:0	menu	engine/menus/main_menu.asm	256	0	db	WEDNES@	
+engine.menus.main_menu:257:0	menu	engine/menus/main_menu.asm	257	0	db	THURS@	
+engine.menus.main_menu:258:0	menu	engine/menus/main_menu.asm	258	0	db	FRI@	
+engine.menus.main_menu:259:0	menu	engine/menus/main_menu.asm	259	0	db	SATUR@	
+engine.menus.main_menu:261:0	menu	engine/menus/main_menu.asm	261	0	db	DAY@	
 engine.menus.menu_2:107:0	menu	engine/menus/menu_2.asm	107	0	db	MONEY@	金钱
 engine.menus.menu_2:109:0	menu	engine/menus/menu_2.asm	109	0	db	COIN@	代币
 engine.menus.menu_2:111:0	menu	engine/menus/menu_2.asm	111	0	db	@	@
@@ -9433,9 +9433,9 @@ engine.rtc.timeset:519:0	menu	engine/rtc/timeset.asm	519	0	db	THURSDAY@	星期�
 engine.rtc.timeset:520:0	menu	engine/rtc/timeset.asm	520	0	db	 FRIDAY@	 星期五
 engine.rtc.timeset:521:0	menu	engine/rtc/timeset.asm	521	0	db	SATURDAY@	星期六
 engine.rtc.timeset:655:0	menu	engine/rtc/timeset.asm	655	0	para	Now on DEBUG…	调试模式…
-engine.rtc.timeset:707:0	menu	engine/rtc/timeset.asm	707	0	db	NITE@	夜
-engine.rtc.timeset:708:0	menu	engine/rtc/timeset.asm	708	0	db	MORN@	早
-engine.rtc.timeset:709:0	menu	engine/rtc/timeset.asm	709	0	db	DAY@	昼
+engine.rtc.timeset:707:0	menu	engine/rtc/timeset.asm	707	0	db	NITE@	
+engine.rtc.timeset:708:0	menu	engine/rtc/timeset.asm	708	0	db	MORN@	
+engine.rtc.timeset:709:0	menu	engine/rtc/timeset.asm	709	0	db	DAY@	
 home.menu:438:0	menu	home/menu.asm	438	0	db	YES@	是
 home.menu:439:0	menu	home/menu.asm	439	0	db	NO@	否
 home.names:244:0	menu	home/names.asm	244	0	db	TM	TM

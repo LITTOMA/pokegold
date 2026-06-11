@@ -52,7 +52,7 @@ MainMenu:
 IF DEF(_DEBUG)
 	menu_coords 0, 0, 14, 9
 ELSE
-	menu_coords 0, 0, 14, 7
+	menu_coords 0, 0, 14, 9
 ENDC
 	dw .MenuData
 	db 1 ; default option
@@ -141,6 +141,13 @@ MainMenu_GetWhichMenu:
 
 MainMenuJoypadLoop:
 	call SetUpMenu
+	ldh a, [hChineseLineActive]
+	and a
+	jr z, .cursor_ready
+	ld hl, w2DMenuCursorInitY
+	inc [hl]
+.cursor_ready
+	call ClearChineseLineMode
 .loop
 	call MainMenu_PrintCurrentTimeAndDay
 	call GetScrollingMenuJoypad
@@ -203,10 +210,12 @@ MainMenu_PrintCurrentTimeAndDay:
 	hlcoord 1, 13
 	lb bc, 4, 13
 	call ClearBox
+	call ClearChineseLineMode
 	call GetWeekday
 	ld b, a
 	decoord 1, 14
 	call PrintDayOfWeek
+	call ClearChineseLineMode
 	decoord 4, 16
 	ldh a, [hHours]
 	ld c, a
