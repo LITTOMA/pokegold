@@ -263,7 +263,9 @@ StartMenu::
 	ld e, a
 	pop hl
 	inc hl
-	call PlaceString
+	ld a, 1
+	ldh [hChineseLineActive], a
+	call PlaceStringContinue
 	ret
 
 .MenuDesc:
@@ -279,7 +281,9 @@ endr
 	ld d, [hl]
 	ld e, a
 	pop hl
-	call PlaceString
+	ld a, 1
+	ldh [hChineseLineActive], a
+	call PlaceStringContinue
 	ret
 .none
 	pop de

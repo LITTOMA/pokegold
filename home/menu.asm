@@ -331,7 +331,14 @@ VerticalMenu::
 	bit STATICMENU_CURSOR_F, a
 	jr z, .cancel
 	call InitVerticalMenuCursor
+	ldh a, [hChineseLineActive]
+	and a
+	jr z, .cursor_ready
+	ld hl, w2DMenuCursorInitY
+	inc [hl]
+.cursor_ready
 	call StaticMenuJoypad
+	call ClearChineseLineMode
 	call MenuClickSound
 	bit B_BUTTON_F, a
 	jr z, .okay
@@ -370,7 +377,7 @@ CopyNameFromMenu::
 	ret
 
 YesNoBox::
-	lb bc, SCREEN_WIDTH - 6, 7
+	lb bc, SCREEN_WIDTH - 6, 6
 
 PlaceYesNoBox::
 	jr _YesNoBox
@@ -388,7 +395,7 @@ _YesNoBox::
 	ld [wMenuBorderRightCoord], a
 	ld a, c
 	ld [wMenuBorderTopCoord], a
-	add 4
+	add 5
 	ld [wMenuBorderBottomCoord], a
 	call PushWindow
 
@@ -414,7 +421,7 @@ InterpretTwoOptionMenu::
 
 YesNoMenuHeader::
 	db MENU_BACKUP_TILES ; flags
-	menu_coords 10, 5, 15, 9
+	menu_coords 10, 5, 15, 10
 	dw .MenuData
 	db 1 ; default option
 
