@@ -9200,10 +9200,6 @@ engine.pokedex.pokedex:1174:0	menu	engine/pokedex/pokedex.asm	1174	0	db	HT  ?	�
 engine.pokedex.pokedex:1174:1	menu	engine/pokedex/pokedex.asm	1174	1	db	??	??
 engine.pokedex.pokedex:1176:0	menu	engine/pokedex/pokedex.asm	1176	0	db	WT   ???lb	重   ???lb
 engine.pokedex.pokedex:1178:0	menu	engine/pokedex/pokedex.asm	1178	0	db	 PAGE AREA CRY PRNT	
-engine.pokedex.pokedex_2:224:0	menu	engine/pokedex/pokedex_2.asm	224	0	db	PAGE@	页@
-engine.pokedex.pokedex_2:226:0	menu	engine/pokedex/pokedex_2.asm	226	0	db	AREA@	区@
-engine.pokedex.pokedex_2:228:0	menu	engine/pokedex/pokedex_2.asm	228	0	db	CRY@	叫@
-engine.pokedex.pokedex_2:230:0	menu	engine/pokedex/pokedex_2.asm	230	0	db	PRNT@	打印@
 engine.pokedex.pokedex:1203:0	menu	engine/pokedex/pokedex.asm	1203	0	db	 OPTION 	 设定
 engine.pokedex.pokedex:1206:0	menu	engine/pokedex/pokedex.asm	1206	0	db	NEW #DEX MODE	新图鉴模式
 engine.pokedex.pokedex:1207:0	menu	engine/pokedex/pokedex.asm	1207	0	next	OLD #DEX MODE	旧图鉴模式
