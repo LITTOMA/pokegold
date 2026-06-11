@@ -96,24 +96,34 @@ StartMenu::
 ; Return carry on exit, and no-carry on selection.
 	xor a
 	ldh [hBGMapMode], a
+	callfar InitChineseFontCache
 	call ._DrawMenuAccount
 	call SetUpMenu
 	ld a, $ff
 	ld [wMenuSelection], a
 .loop
-	call .PrintMenuAccount
+	ld a, [wMenuSelection]
+	push af
 	call GetScrollingMenuJoypad
 	ld a, [wMenuJoypad]
 	cp PAD_B
 	jr z, .b
 	cp PAD_A
 	jr z, .a
+	ld a, [wMenuSelection]
+	ld b, a
+	pop af
+	cp b
+	jr z, .loop
+	call .PrintMenuAccount
 	jr .loop
 .a
+	pop af
 	call PlayClickSFX
 	and a
 	ret
 .b
+	pop af
 	scf
 	ret
 
@@ -157,13 +167,13 @@ StartMenu::
 
 .MenuHeader:
 	db MENU_BACKUP_TILES ; flags
-	menu_coords 10, 0, SCREEN_WIDTH - 1, SCREEN_HEIGHT - 1
+	menu_coords 8, 0, SCREEN_WIDTH - 1, SCREEN_HEIGHT - 1
 	dw .MenuData
 	db 1 ; default selection
 
 .ContestMenuHeader:
 	db MENU_BACKUP_TILES ; flags
-	menu_coords 10, 2, SCREEN_WIDTH - 1, SCREEN_HEIGHT - 1
+	menu_coords 8, 2, SCREEN_WIDTH - 1, SCREEN_HEIGHT - 1
 	dw .MenuData
 	db 1 ; default selection
 
@@ -367,18 +377,25 @@ endr
 	call .IsMenuAccountOn
 	ret z
 	call ._DrawMenuAccount
-	decoord 0, 14
-	jp .MenuDesc
+	ld hl, wOptions
+	ld a, [hl]
+	push af
+	set NO_TEXT_SCROLL, [hl]
+	decoord 0, 13
+	call .MenuDesc
+	pop af
+	ld [wOptions], a
+	ret
 
 ._DrawMenuAccount:
 	call .IsMenuAccountOn
 	ret z
-	hlcoord 0, 13
-	lb bc, 5, 10
+	hlcoord 0, 12
+	lb bc, 6, 8
 	call ClearBox
-	hlcoord 0, 13
-	ld b, 3
-	ld c, 8
+	hlcoord 0, 12
+	ld b, 4
+	ld c, 6
 	jp TextboxPalette
 
 .IsMenuAccountOn:

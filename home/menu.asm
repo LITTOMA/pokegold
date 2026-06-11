@@ -212,13 +212,6 @@ GetMenuTextStartCoord::
 	ld a, [wMenuBorderLeftCoord]
 	ld c, a
 	inc c
-; if not set, leave extra room on top
-	ld a, [wMenuDataFlags]
-	bit STATICMENU_NO_TOP_SPACING_F, a
-	jr nz, .no_top_spacing
-	inc b
-
-.no_top_spacing
 ; if set, leave extra room on the left
 	ld a, [wMenuDataFlags]
 	bit STATICMENU_CURSOR_F, a
@@ -547,7 +540,7 @@ GetMenuIndexSet::
 
 RunMenuItemPrintingFunction::
 	call MenuBoxCoord2Tile
-	ld bc, 2 * SCREEN_WIDTH + 2
+	ld bc, SCREEN_WIDTH + 2
 	add hl, bc
 .loop
 	inc de

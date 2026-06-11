@@ -121,13 +121,15 @@ InitClock:
 .ClearScreen:
 	xor a
 	ldh [hBGMapMode], a
+	hlcoord 0, 0, wAttrmap
+	ld bc, SCREEN_AREA
+	xor a
+	call ByteFill
 	hlcoord 0, 0
 	ld bc, SCREEN_AREA
 	xor a
 	call ByteFill
-	ld a, $1
-	ldh [hBGMapMode], a
-	ret
+	jp CGBOnly_CopyTilemapAtOnce
 
 SetHour:
 	ldh a, [hJoyPressed]

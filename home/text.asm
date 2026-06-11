@@ -1,6 +1,15 @@
 ClearBox::
 ; Fill a c*b box at hl with blank tiles.
+	push hl
+	push bc
 	ld a, ' '
+	call .fill
+	pop bc
+	pop hl
+	ld de, wAttrmap - wTilemap
+	add hl, de
+	ld a, PAL_BG_TEXT
+.fill
 	ld de, SCREEN_WIDTH
 .row
 	push hl
@@ -19,6 +28,11 @@ ClearBox::
 ClearTilemap::
 ; Fill wTilemap with blank tiles.
 
+	ld a, PAL_BG_TEXT
+	hlcoord 0, 0, wAttrmap
+	ld bc, wAttrmapEnd - wAttrmap
+	call ByteFill
+
 	hlcoord 0, 0
 	ld a, ' '
 	ld bc, wTilemapEnd - wTilemap
@@ -28,13 +42,9 @@ ClearTilemap::
 	ldh a, [rLCDC]
 	bit B_LCDC_ENABLE, a
 	ret z
-	jp WaitBGMap
+	jp WaitBGMap2
 
 ClearScreen::
-	ld a, PAL_BG_TEXT
-	hlcoord 0, 0, wAttrmap
-	ld bc, SCREEN_AREA
-	call ByteFill
 	jr ClearTilemap
 
 Textbox::

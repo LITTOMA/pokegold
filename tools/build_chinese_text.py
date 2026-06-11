@@ -2,24 +2,29 @@ from __future__ import annotations
 
 import argparse
 import csv
+from dataclasses import dataclass
 import re
 import urllib.error
 import urllib.request
 import zipfile
+from collections import defaultdict, deque
 from pathlib import Path
+from typing import Deque
 
 try:
-    from PIL import Image, ImageDraw, ImageFont
+    from PIL import Image
 except ImportError as exc:
     raise SystemExit("Chinese text build requires Pillow: python -m pip install pillow") from exc
 
 
 ROOT = Path(__file__).resolve().parents[1]
 FONT_VERSION = "v2026.05.07"
-FONT_ARCHIVE = f"fusion-pixel-font-10px-monospaced-ttf-{FONT_VERSION}.zip"
-FONT_URL = f"https://github.com/TakWolf/fusion-pixel-font/releases/download/{FONT_VERSION}/{FONT_ARCHIVE}"
-DEFAULT_FONT_DIR = ROOT / "tools" / f"fusion-pixel-font-10px-monospaced-ttf-{FONT_VERSION}"
-DEFAULT_FONT = DEFAULT_FONT_DIR / "fusion-pixel-10px-monospaced-zh_hans.ttf"
+FONT_RELEASE_TAG = FONT_VERSION.removeprefix("v")
+FONT_PACKAGE_SIZE = 12
+FONT_ARCHIVE = f"fusion-pixel-font-{FONT_PACKAGE_SIZE}px-monospaced-bdf-{FONT_VERSION}.zip"
+FONT_URL = f"https://github.com/TakWolf/fusion-pixel-font/releases/download/{FONT_RELEASE_TAG}/{FONT_ARCHIVE}"
+DEFAULT_FONT_DIR = ROOT / "tools" / f"fusion-pixel-font-{FONT_PACKAGE_SIZE}px-monospaced-bdf-{FONT_VERSION}"
+DEFAULT_FONT = DEFAULT_FONT_DIR / f"fusion-pixel-{FONT_PACKAGE_SIZE}px-monospaced-zh_hans.bdf"
 DEFAULT_OUT = ROOT / "build" / "chinese"
 DEFAULT_MAP = ROOT / "tools" / "translation_map.tsv"
 DEFAULT_TRANSLATIONS = ROOT / "translations" / "zh-Hans" / "text.tsv"
@@ -49,6 +54,24 @@ def read_base_charmap_chars() -> set[str]:
 
 
 BASE_CHARMAP_CHARS = read_base_charmap_chars()
+
+
+@dataclass(frozen=True)
+class BdfGlyph:
+    width: int
+    height: int
+    x_offset: int
+    y_offset: int
+    bitmap: tuple[str, ...]
+
+
+@dataclass(frozen=True)
+class BdfFont:
+    width: int
+    height: int
+    ascent: int
+    descent: int
+    glyphs: dict[int, BdfGlyph]
 
 
 def uses_chinese_font(char: str) -> bool:
@@ -119,17 +142,17 @@ def ensure_font(path: Path) -> Path:
     archive_path = ROOT / "tools" / "downloads" / FONT_ARCHIVE
     archive_path.parent.mkdir(parents=True, exist_ok=True)
     if not archive_path.exists():
-        print(f"Downloading Fusion Pixel Font 10px from {FONT_URL}")
+        print(f"Downloading Fusion Pixel Font {FONT_PACKAGE_SIZE}px package from {FONT_URL}")
         try:
             urllib.request.urlretrieve(FONT_URL, archive_path)
         except urllib.error.URLError as exc:
-            raise SystemExit(f"Could not download Fusion Pixel Font 10px: {exc}") from exc
+            raise SystemExit(f"Could not download Fusion Pixel Font {FONT_PACKAGE_SIZE}px package: {exc}") from exc
 
     with zipfile.ZipFile(archive_path) as archive:
-        archive.extractall(ROOT / "tools")
+        archive.extractall(DEFAULT_FONT_DIR)
 
     if not path.exists():
-        raise SystemExit(f"Fusion Pixel Font 10px archive did not contain {path.name}")
+        raise SystemExit(f"Fusion Pixel Font {FONT_PACKAGE_SIZE}px archive did not contain {path.name}")
     return path
 
 
@@ -191,6 +214,20 @@ def build_line_translations(rows: list[dict[str, str]]) -> dict[tuple[Path, int,
             continue
         translations[key] = normalize_translation(translation, row.get("source", ""))
     return translations
+
+
+def build_source_translation_queues(rows: list[dict[str, str]]) -> tuple[dict[Path, dict[str, Deque[str]]], int]:
+    translations: dict[Path, dict[str, Deque[str]]] = defaultdict(lambda: defaultdict(deque))
+    count = 0
+    for row in rows:
+        translation = row.get("translation", "")
+        file_path = row.get("file", "").strip()
+        source = row.get("source", "")
+        if not translation or not file_path:
+            continue
+        translations[Path(file_path)][source].append(normalize_translation(translation, source))
+        count += 1
+    return {path: dict(source_map) for path, source_map in translations.items()}, count
 
 
 def display_width(text: str) -> int:
@@ -287,16 +324,84 @@ def iter_string_chars(line: str):
             escaped = False
 
 
-def render_glyph(font: ImageFont.FreeTypeFont, char: str) -> Image.Image:
+def load_bdf_font(path: Path) -> BdfFont:
+    width = FONT_PACKAGE_SIZE
+    height = FONT_PACKAGE_SIZE
+    ascent = FONT_PACKAGE_SIZE
+    descent = 0
+    glyphs: dict[int, BdfGlyph] = {}
+    encoding: int | None = None
+    bbx: tuple[int, int, int, int] | None = None
+    bitmap: list[str] = []
+    in_bitmap = False
+
+    for raw_line in path.read_text(encoding="ascii", errors="strict").splitlines():
+        line = raw_line.strip()
+        parts = line.split()
+        if not parts:
+            continue
+        keyword = parts[0]
+
+        if keyword == "FONTBOUNDINGBOX" and len(parts) >= 5:
+            width, height = int(parts[1]), int(parts[2])
+            continue
+        if keyword == "FONT_ASCENT" and len(parts) >= 2:
+            ascent = int(parts[1])
+            continue
+        if keyword == "FONT_DESCENT" and len(parts) >= 2:
+            descent = int(parts[1])
+            continue
+        if keyword == "STARTCHAR":
+            encoding = None
+            bbx = None
+            bitmap = []
+            in_bitmap = False
+            continue
+        if keyword == "ENCODING" and len(parts) >= 2:
+            encoding = int(parts[1])
+            continue
+        if keyword == "BBX" and len(parts) >= 5:
+            bbx = (int(parts[1]), int(parts[2]), int(parts[3]), int(parts[4]))
+            continue
+        if keyword == "BITMAP":
+            bitmap = []
+            in_bitmap = True
+            continue
+        if keyword == "ENDCHAR":
+            if encoding is not None and encoding >= 0 and bbx is not None:
+                glyphs[encoding] = BdfGlyph(*bbx, tuple(bitmap))
+            in_bitmap = False
+            continue
+        if in_bitmap:
+            bitmap.append(line)
+
+    return BdfFont(width, max(height, ascent + descent), ascent, descent, glyphs)
+
+
+def render_bdf_glyph(font: BdfFont, char: str) -> Image.Image:
+    glyph = font.glyphs.get(ord(char))
+    if glyph is None:
+        raise SystemExit(f"{DEFAULT_FONT.name} does not contain glyph U+{ord(char):04X} ({char})")
+
+    glyph_image = Image.new("L", (glyph.width, glyph.height), 255)
+    pixels = glyph_image.load()
+    for y, row in enumerate(glyph.bitmap[:glyph.height]):
+        bits = int(row, 16)
+        bit_count = len(row) * 4
+        for x in range(glyph.width):
+            if bits & (1 << (bit_count - 1 - x)):
+                pixels[x, y] = 0
+
+    em_image = Image.new("L", (font.width, font.height), 255)
+    x = max(0, glyph.x_offset)
+    y = font.ascent - glyph.y_offset - glyph.height
+    x = max(0, min(font.width - glyph.width, x))
+    y = max(0, min(font.height - glyph.height, y))
+    em_image.paste(glyph_image, (x, y))
+
     image = Image.new("L", (GLYPH_SIZE, GLYPH_SIZE), 255)
-    draw = ImageDraw.Draw(image)
-    bbox = draw.textbbox((0, 0), char, font=font)
-    width = bbox[2] - bbox[0]
-    height = bbox[3] - bbox[1]
-    x = (GLYPH_SIZE - width) // 2 - bbox[0]
-    y = (GLYPH_SIZE - height) // 2 - bbox[1]
-    draw.text((x, y), char, font=font, fill=0)
-    return image.point(lambda value: 0 if value < 128 else 255)
+    image.paste(em_image, ((GLYPH_SIZE - font.width) // 2, (GLYPH_SIZE - font.height) // 2))
+    return image
 
 
 def glyph_to_1bpp_tiles(image: Image.Image) -> bytes:
@@ -318,12 +423,12 @@ def blank_glyph_bytes() -> bytes:
 
 
 def write_font(font_path: Path, chars: list[str]) -> bool:
-    font = ImageFont.truetype(str(font_path), 10)
+    font = load_bdf_font(font_path)
     font_banks = [bytearray(), bytearray()]
     preview = Image.new("L", (max(1, len(chars)) * GLYPH_SIZE, GLYPH_SIZE), 255)
 
     for index, char in enumerate(chars):
-        glyph = render_glyph(font, char)
+        glyph = render_bdf_glyph(font, char)
         bank = index // CHINESE_FONT_BANK_CHARS
         font_banks[bank].extend(glyph_to_1bpp_tiles(glyph))
         preview.paste(glyph, (index * GLYPH_SIZE, 0))
@@ -368,15 +473,16 @@ def write_generated_includes(chars: list[str]) -> bool:
     return changed
 
 
-def replace_line_strings(line: str, translations: dict[int, str]) -> str:
-    if not translations:
+def replace_line_strings(line: str, source_translations: dict[str, Deque[str]]) -> str:
+    if not source_translations:
         return line
 
     result: list[str] = []
     last_end = 0
-    for string_index, (start, end, source) in enumerate(iter_string_spans(line)):
+    for start, end, source in iter_string_spans(line):
         result.append(line[last_end:start])
-        text = translations.get(string_index, source)
+        queue = source_translations.get(source)
+        text = queue.popleft() if queue else source
         result.append(asm_string(text))
         last_end = end
     result.append(line[last_end:])
@@ -387,7 +493,7 @@ def convert_line(
     line: str,
     char_to_token: dict[str, str],
     out_root: Path,
-    line_translations: dict[int, str] | None = None,
+    source_translations: dict[str, Deque[str]] | None = None,
 ) -> str:
     ending = ""
     if line.endswith("\r\n"):
@@ -401,7 +507,7 @@ def convert_line(
         if include_path.endswith(ASM_SUFFIX) and not include_path.startswith(str(out_root).replace("\\", "/")):
             return f'{include_match.group(1)}{out_root.as_posix()}/{include_path}{include_match.group(3)}{ending}'
 
-    line = replace_line_strings(line, line_translations or {})
+    line = replace_line_strings(line, source_translations or {})
     result: list[str] = []
     in_string = False
     escaped = False
@@ -429,7 +535,7 @@ def write_preprocessed_sources(
     out_root: Path,
     chars: list[str],
     replacements: dict[Path, dict[str, list[str]]],
-    line_translations: dict[tuple[Path, int, int], str],
+    source_translations: dict[Path, dict[str, Deque[str]]],
 ) -> bool:
     if out_root.exists():
         for stale in out_root.rglob(f"*{ASM_SUFFIX}"):
@@ -444,14 +550,13 @@ def write_preprocessed_sources(
         out_path.parent.mkdir(parents=True, exist_ok=True)
         lines = path.read_text(encoding="utf-8-sig").splitlines(keepends=True)
         lines = apply_replacements(rel, lines, replacements)
+        file_source_translations = {
+            source: deque(translations)
+            for source, translations in source_translations.get(rel, {}).items()
+        }
         converted_lines: list[str] = []
-        for line_number, line in enumerate(lines, start=1):
-            translations_for_line = {
-                string_index: translation
-                for (line_rel, line_no, string_index), translation in line_translations.items()
-                if line_rel == rel and line_no == line_number
-            }
-            converted_lines.append(convert_line(line, char_to_token, out_root, translations_for_line))
+        for line in lines:
+            converted_lines.append(convert_line(line, char_to_token, out_root, file_source_translations))
         converted = "".join(converted_lines)
         changed |= write_text_if_changed(out_path, converted)
     return changed
@@ -471,7 +576,7 @@ def main() -> None:
         for row in translation_rows
         if row.get("id", "").strip() and row.get("translation", "")
     }
-    line_translations = build_line_translations(translation_rows)
+    source_translations, source_translation_count = build_source_translation_queues(translation_rows)
     replacements = build_replacements(args.map, translations)
     chars = merge_chars(read_existing_chars(), collect_font_chars_from_texts(translations.values()))
     if len(chars) > MAX_CHINESE_CHARS:
@@ -484,14 +589,14 @@ def main() -> None:
     changed |= write_font(ensure_font(args.font), chars)
     changed |= write_generated_includes(chars)
     files = iter_asm_files(ROOT)
-    changed |= write_preprocessed_sources(files, args.out, chars, replacements, line_translations)
+    changed |= write_preprocessed_sources(files, args.out, chars, replacements, source_translations)
     stamp = args.out / "stamp"
     if changed or not stamp.exists():
         stamp.parent.mkdir(parents=True, exist_ok=True)
         stamp.write_text("ok\n", encoding="utf-8")
     print(
         f"Chinese text build: {len(chars)} generated chars, "
-        f"{len(line_translations)} string(s) translated, "
+        f"{source_translation_count} string(s) translated, "
         f"{len(replacements)} asm file(s) patched, {len(files)} asm files"
     )
 

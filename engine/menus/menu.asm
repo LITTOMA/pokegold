@@ -615,10 +615,6 @@ _InitVerticalMenuCursor::
 	ld hl, w2DMenuCursorInitY
 	ld a, [wMenuBorderTopCoord]
 	inc a
-	bit STATICMENU_NO_TOP_SPACING_F, b
-	jr nz, .skip_offset
-	inc a
-.skip_offset
 	ld [hli], a
 ; w2DMenuCursorInitX
 	ld a, [wMenuBorderLeftCoord]

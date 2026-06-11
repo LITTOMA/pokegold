@@ -67,7 +67,7 @@ def main() -> None:
         return path
 
     try:
-        step(600)
+        step(3000)
         shot("00_after_boot")
         tap("start", after_frames=90)
         shot("01_after_start")

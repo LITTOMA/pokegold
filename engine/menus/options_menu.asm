@@ -25,7 +25,7 @@ _Option:
 	call GetSGBLayout
 	call SetDefaultBGPAndOBP
 	callfar InitChineseFontCache
-	hlcoord 2, 2
+	hlcoord 2, 1
 	ld de, StringOptions
 	call PlaceString
 	xor a
@@ -143,7 +143,7 @@ Options_TextSpeed:
 	ld e, [hl]
 	inc hl
 	ld d, [hl]
-	hlcoord 13, 2
+	hlcoord 13, 1
 	call PlaceString
 	and a
 	ret
@@ -213,7 +213,7 @@ Options_BattleScene:
 	ld de, .Off
 
 .Display:
-	hlcoord 13, 4
+	hlcoord 13, 3
 	call PlaceString
 	and a
 	ret
@@ -251,7 +251,7 @@ Options_BattleStyle:
 	ld de, .Set
 
 .Display:
-	hlcoord 13, 6
+	hlcoord 13, 5
 	call PlaceString
 	and a
 	ret
@@ -296,7 +296,7 @@ Options_Sound:
 	ld de, .Stereo
 
 .Display:
-	hlcoord 13, 8
+	hlcoord 13, 7
 	call PlaceString
 	and a
 	ret
@@ -350,7 +350,7 @@ Options_Print:
 	ld e, [hl]
 	inc hl
 	ld d, [hl]
-	hlcoord 13, 10
+	hlcoord 13, 9
 	call PlaceString
 	and a
 	ret
@@ -436,7 +436,7 @@ Options_MenuAccount:
 	ld de, .On
 
 .Display:
-	hlcoord 13, 12
+	hlcoord 13, 11
 	call PlaceString
 	and a
 	ret
@@ -468,7 +468,7 @@ Options_Frame:
 	ld [hl], a
 UpdateFrame:
 	ld a, [wTextboxFrame]
-	hlcoord 13, 14 ; where on the screen the number is drawn
+	hlcoord 13, 13 ; where on the screen the number is drawn
 	add '1'
 	ld [hl], a
 	call LoadFontsExtra
@@ -538,14 +538,26 @@ Options_UpdateCursorPosition:
 	hlcoord 1, 1
 	ld de, SCREEN_WIDTH
 	ld c, SCREEN_HEIGHT - 2
-.loop
+.clear_tiles
 	ld [hl], ' '
 	add hl, de
 	dec c
-	jr nz, .loop
-	hlcoord 1, 2
+	jr nz, .clear_tiles
+	hlcoord 1, 1, wAttrmap
+	ld c, SCREEN_HEIGHT - 2
+	ld a, PAL_BG_TEXT
+.clear_attrs
+	ld [hl], a
+	add hl, de
+	dec c
+	jr nz, .clear_attrs
+	hlcoord 1, 1
 	ld bc, 2 * SCREEN_WIDTH
 	ld a, [wJumptableIndex]
 	call AddNTimes
 	ld [hl], '▶'
+	ld bc, wAttrmap - wTilemap
+	add hl, bc
+	ld a, PAL_BG_TEXT
+	ld [hl], a
 	ret
