@@ -194,6 +194,8 @@ MACRO dict
 	endc
 ENDM
 
+	cp '<CN>'
+	jp z, ChineseChar
 	dict '<LINE>',    LineChar
 	dict '<NEXT>',    NextLineChar
 	dict '<NULL>',    NullChar

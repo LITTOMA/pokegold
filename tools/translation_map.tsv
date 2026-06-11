@@ -1,0 +1,3 @@
+id	file	label	terminator
+oak.time.woke_up	data/text/common_1.asm	_OakTimeWokeUpText	prompt
+oak.time.what_time	data/text/common_1.asm	_OakTimeWhatTimeIsItText	done

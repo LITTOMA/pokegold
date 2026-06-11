@@ -1,5 +1,3 @@
-DEF TILES_PER_CYCLE EQU 8
-
 FarDecompressBufferedPic:: ; unreferenced
 	ld b, a
 	ldh a, [hROMBank]

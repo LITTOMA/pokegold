@@ -39,6 +39,7 @@ InitClock:
 	call .ClearScreen
 	call WaitBGMap
 	call RotateFourPalettesRight
+	call LoadFontsExtra
 	ld hl, OakTimeWokeUpText
 	call PrintText
 	ld hl, wTimeSetBuffer

@@ -13,10 +13,12 @@
 *.gbc
 *.gb
 *.patch
+roms/
 
 # rgbds extras
 *.map
 *.sym
+*.pdb
 
 # tool binaries
 *.exe
@@ -26,9 +28,29 @@
 *$py.class
 
 # save game files
+*.ram
 *.sgm
 *.sav
 *.rtc
 *.sn*
 *.sa*
 *.sg1
+
+# generated Chinese text assets
+build/
+constants/chinese_charmap.asm
+constants/chinese_font_constants.asm
+gfx/font/chinese_chars.tsv
+gfx/font/chinese_preview.png
+
+# local third-party tools and downloads
+tools/downloads/
+tools/fusion-pixel-font-*/
+tools/pyboy/
+tools/rgbds-*/
+tools/screenshots/
+tools/zig-*/
+tools/zig-cache/
+
+# local scratch artifacts
+tools/generate_chinese_font.py

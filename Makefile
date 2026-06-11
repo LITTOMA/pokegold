@@ -55,11 +55,15 @@ RGBASM  ?= $(RGBDS)rgbasm
 RGBFIX  ?= $(RGBDS)rgbfix
 RGBGFX  ?= $(RGBDS)rgbgfx
 RGBLINK ?= $(RGBDS)rgblink
+PYTHON  ?= python
 
 RGBASMFLAGS  ?= -Weverything -Wtruncation=1
 RGBLINKFLAGS ?= -Weverything -Wtruncation=1
 RGBFIXFLAGS  ?= -Weverything
 RGBGFXFLAGS  ?= -Weverything
+
+CHINESE_BUILD := build/chinese
+CHINESE_STAMP := $(CHINESE_BUILD)/stamp
 
 
 ### Build targets
@@ -79,7 +83,8 @@ RGBGFXFLAGS  ?= -Weverything
 	clean \
 	tidy \
 	compare \
-	tools
+	tools \
+	FORCE
 
 all: $(roms)
 gold:         pokegold.gbc
@@ -123,7 +128,7 @@ tools:
 	$(MAKE) -C tools/
 
 
-RGBASMFLAGS += -Q8 -P includes.asm
+RGBASMFLAGS += -Q8 -P $(CHINESE_BUILD)/includes.asm
 # Create a sym/map for debug purposes if `make` run with `DEBUG=1`
 ifeq ($(DEBUG),1)
 RGBASMFLAGS += -E
@@ -149,13 +154,20 @@ ifeq (,$(filter clean tidy tools,$(MAKECMDGOALS)))
 
 $(info $(shell $(MAKE) -C tools))
 
+$(CHINESE_STAMP): FORCE tools/build_chinese_text.py tools/translation_map.tsv translations/zh-Hans/text.tsv
+	$(PYTHON) tools/build_chinese_text.py
+
+constants/chinese_charmap.asm constants/chinese_font_constants.asm gfx/font/chinese.1bpp: $(CHINESE_STAMP) ;
+
+FORCE:
+
 # The dep rules have to be explicit or else missing files won't be reported.
 # As a side effect, they're evaluated immediately instead of when the rule is invoked.
 # It doesn't look like $(shell) can be deferred so there might not be a better way.
-preinclude_deps := includes.asm $(shell tools/scan_includes includes.asm)
+preinclude_deps := includes.asm constants/chinese_charmap.asm constants/chinese_font_constants.asm $(shell tools/scan_includes includes.asm)
 define DEP
-$1: $2 $$(shell tools/scan_includes $2) $(preinclude_deps) | rgbdscheck.o
-	$$(RGBASM) $$(RGBASMFLAGS) -o $$@ $$<
+$1: $2 $$(shell tools/scan_includes $2) $(preinclude_deps) $(CHINESE_STAMP) | rgbdscheck.o
+	$$(RGBASM) $$(RGBASMFLAGS) -o $$@ $(CHINESE_BUILD)/$2
 endef
 
 # Dependencies for shared objects (drop _gold and _silver from asm file basenames)
