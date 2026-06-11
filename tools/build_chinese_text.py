@@ -27,13 +27,32 @@ MANIFEST = ROOT / "gfx" / "font" / "chinese_chars.tsv"
 ASM_SUFFIX = ".asm"
 GLYPH_SIZE = 16
 TILE_SIZE = 8
-MAX_CHINESE_CHARS = 64
+MAX_CHINESE_CHARS = 1024
+CHINESE_FONT_BANK_CHARS = 512
 TOKEN_PREFIX = "CN"
 INCLUDE_RE = re.compile(r'^(\s*INCLUDE\s+")([^"]+)(".*)$')
+STRING_RE = re.compile(r'"((?:[^"\\]|\\.)*)"')
+CHARMAP_RE = re.compile(r'^\s*charmap\s+"((?:[^"\\]|\\.)*)"')
+
+
+def read_base_charmap_chars() -> set[str]:
+    chars: set[str] = set()
+    charmap_path = ROOT / "constants" / "charmap.asm"
+    for line in charmap_path.read_text(encoding="utf-8").splitlines():
+        match = CHARMAP_RE.match(line)
+        if not match:
+            continue
+        text = match.group(1)
+        if len(text) == 1 and ord(text) >= 0x80:
+            chars.add(text)
+    return chars
+
+
+BASE_CHARMAP_CHARS = read_base_charmap_chars()
 
 
 def uses_chinese_font(char: str) -> bool:
-    return ord(char) >= 0x80
+    return ord(char) >= 0x80 and char not in BASE_CHARMAP_CHARS
 
 
 def iter_asm_files(root: Path) -> list[Path]:
@@ -114,6 +133,30 @@ def ensure_font(path: Path) -> Path:
     return path
 
 
+def iter_string_spans(line: str):
+    index = 0
+    while index < len(line):
+        char = line[index]
+        if char == ";":
+            return
+        if char != '"':
+            index += 1
+            continue
+        start = index + 1
+        index = start
+        escaped = False
+        while index < len(line):
+            char = line[index]
+            if char == '"' and not escaped:
+                yield start, index, line[start:index]
+                index += 1
+                break
+            escaped = char == "\\" and not escaped
+            if char != "\\":
+                escaped = False
+            index += 1
+
+
 def read_translations(path: Path) -> dict[str, str]:
 	translations: dict[str, str] = {}
 	for row in read_tsv(path):
@@ -122,6 +165,32 @@ def read_translations(path: Path) -> dict[str, str]:
 		if text_id and translation:
 			translations[text_id] = translation
 	return translations
+
+
+def normalize_translation(text: str, source: str = "") -> str:
+    text = text.replace(r"\n", "<LF>")
+    if source.endswith("@") and text and not text.endswith("@"):
+        text += "@"
+    return text
+
+
+def build_line_translations(rows: list[dict[str, str]]) -> dict[tuple[Path, int, int], str]:
+    translations: dict[tuple[Path, int, int], str] = {}
+    for row in rows:
+        translation = row.get("translation", "")
+        if not translation:
+            continue
+        file_path = row.get("file", "").strip()
+        line_number = row.get("line", "").strip()
+        string_index = row.get("string_index", "").strip()
+        if not file_path or not line_number or not string_index:
+            continue
+        try:
+            key = (Path(file_path), int(line_number), int(string_index))
+        except ValueError:
+            continue
+        translations[key] = normalize_translation(translation, row.get("source", ""))
+    return translations
 
 
 def display_width(text: str) -> int:
@@ -244,20 +313,28 @@ def glyph_to_1bpp_tiles(image: Image.Image) -> bytes:
     return bytes(data)
 
 
+def blank_glyph_bytes() -> bytes:
+    return bytes(TILE_SIZE * 4)
+
+
 def write_font(font_path: Path, chars: list[str]) -> bool:
     font = ImageFont.truetype(str(font_path), 10)
-    font_data = bytearray()
+    font_banks = [bytearray(), bytearray()]
     preview = Image.new("L", (max(1, len(chars)) * GLYPH_SIZE, GLYPH_SIZE), 255)
 
     for index, char in enumerate(chars):
         glyph = render_glyph(font, char)
-        font_data.extend(glyph_to_1bpp_tiles(glyph))
+        bank = index // CHINESE_FONT_BANK_CHARS
+        font_banks[bank].extend(glyph_to_1bpp_tiles(glyph))
         preview.paste(glyph, (index * GLYPH_SIZE, 0))
 
-    if not chars:
-        font_data.extend(bytes(TILE_SIZE * 4))
+    for bank_data in font_banks:
+        if not bank_data:
+            bank_data.extend(blank_glyph_bytes())
 
-    changed = write_bytes_if_changed(ROOT / "gfx" / "font" / "chinese.1bpp", bytes(font_data))
+    changed = False
+    for bank, bank_data in enumerate(font_banks):
+        changed |= write_bytes_if_changed(ROOT / "gfx" / "font" / f"chinese_{bank}.1bpp", bytes(bank_data))
     preview_path = ROOT / "gfx" / "font" / "chinese_preview.png"
     old_preview = preview_path.read_bytes() if preview_path.exists() else None
     preview_path.parent.mkdir(parents=True, exist_ok=True)
@@ -273,8 +350,10 @@ def write_generated_includes(chars: list[str]) -> bool:
         "",
     ]
     for index, char in enumerate(chars):
-        token = f"<{TOKEN_PREFIX}{index:02X}>"
-        charmap_lines.append(f'\tcharmap "{token}", $17, ${index:02x} ; {char}')
+        token = f"<{TOKEN_PREFIX}{index:03X}>"
+        low = index & 0xff
+        high = index >> 8
+        charmap_lines.append(f'\tcharmap "{token}", $17, ${low:02x}, ${high:02x} ; {char}')
     changed = write_text_if_changed(ROOT / "constants" / "chinese_charmap.asm", "\n".join(charmap_lines) + "\n")
 
     constants = [
@@ -289,7 +368,27 @@ def write_generated_includes(chars: list[str]) -> bool:
     return changed
 
 
-def convert_line(line: str, char_to_token: dict[str, str], out_root: Path) -> str:
+def replace_line_strings(line: str, translations: dict[int, str]) -> str:
+    if not translations:
+        return line
+
+    result: list[str] = []
+    last_end = 0
+    for string_index, (start, end, source) in enumerate(iter_string_spans(line)):
+        result.append(line[last_end:start])
+        text = translations.get(string_index, source)
+        result.append(asm_string(text))
+        last_end = end
+    result.append(line[last_end:])
+    return "".join(result)
+
+
+def convert_line(
+    line: str,
+    char_to_token: dict[str, str],
+    out_root: Path,
+    line_translations: dict[int, str] | None = None,
+) -> str:
     ending = ""
     if line.endswith("\r\n"):
         line, ending = line[:-2], "\r\n"
@@ -302,6 +401,7 @@ def convert_line(line: str, char_to_token: dict[str, str], out_root: Path) -> st
         if include_path.endswith(ASM_SUFFIX) and not include_path.startswith(str(out_root).replace("\\", "/")):
             return f'{include_match.group(1)}{out_root.as_posix()}/{include_path}{include_match.group(3)}{ending}'
 
+    line = replace_line_strings(line, line_translations or {})
     result: list[str] = []
     in_string = False
     escaped = False
@@ -329,6 +429,7 @@ def write_preprocessed_sources(
     out_root: Path,
     chars: list[str],
     replacements: dict[Path, dict[str, list[str]]],
+    line_translations: dict[tuple[Path, int, int], str],
 ) -> bool:
     if out_root.exists():
         for stale in out_root.rglob(f"*{ASM_SUFFIX}"):
@@ -336,14 +437,22 @@ def write_preprocessed_sources(
     out_root.mkdir(parents=True, exist_ok=True)
 
     changed = False
-    char_to_token = {char: f"<{TOKEN_PREFIX}{index:02X}>" for index, char in enumerate(chars)}
+    char_to_token = {char: f"<{TOKEN_PREFIX}{index:03X}>" for index, char in enumerate(chars)}
     for path in files:
         rel = path.relative_to(ROOT)
         out_path = out_root / rel
         out_path.parent.mkdir(parents=True, exist_ok=True)
         lines = path.read_text(encoding="utf-8-sig").splitlines(keepends=True)
         lines = apply_replacements(rel, lines, replacements)
-        converted = "".join(convert_line(line, char_to_token, out_root) for line in lines)
+        converted_lines: list[str] = []
+        for line_number, line in enumerate(lines, start=1):
+            translations_for_line = {
+                string_index: translation
+                for (line_rel, line_no, string_index), translation in line_translations.items()
+                if line_rel == rel and line_no == line_number
+            }
+            converted_lines.append(convert_line(line, char_to_token, out_root, translations_for_line))
+        converted = "".join(converted_lines)
         changed |= write_text_if_changed(out_path, converted)
     return changed
 
@@ -356,7 +465,13 @@ def main() -> None:
     parser.add_argument("--out", default=DEFAULT_OUT, type=Path)
     args = parser.parse_args()
 
-    translations = read_translations(args.translations)
+    translation_rows = read_tsv(args.translations)
+    translations = {
+        row.get("id", "").strip(): row.get("translation", "")
+        for row in translation_rows
+        if row.get("id", "").strip() and row.get("translation", "")
+    }
+    line_translations = build_line_translations(translation_rows)
     replacements = build_replacements(args.map, translations)
     chars = merge_chars(read_existing_chars(), collect_font_chars_from_texts(translations.values()))
     if len(chars) > MAX_CHINESE_CHARS:
@@ -369,13 +484,14 @@ def main() -> None:
     changed |= write_font(ensure_font(args.font), chars)
     changed |= write_generated_includes(chars)
     files = iter_asm_files(ROOT)
-    changed |= write_preprocessed_sources(files, args.out, chars, replacements)
+    changed |= write_preprocessed_sources(files, args.out, chars, replacements, line_translations)
     stamp = args.out / "stamp"
     if changed or not stamp.exists():
         stamp.parent.mkdir(parents=True, exist_ok=True)
         stamp.write_text("ok\n", encoding="utf-8")
     print(
         f"Chinese text build: {len(chars)} generated chars, "
+        f"{len(line_translations)} string(s) translated, "
         f"{len(replacements)} asm file(s) patched, {len(files)} asm files"
     )
 

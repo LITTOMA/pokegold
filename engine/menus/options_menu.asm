@@ -21,6 +21,10 @@ _Option:
 	ld b, SCREEN_HEIGHT - 2
 	ld c, SCREEN_WIDTH - 2
 	call Textbox
+	ld b, SCGB_DIPLOMA
+	call GetSGBLayout
+	call SetDefaultBGPAndOBP
+	callfar InitChineseFontCache
 	hlcoord 2, 2
 	ld de, StringOptions
 	call PlaceString
@@ -46,9 +50,6 @@ _Option:
 	inc a
 	ldh [hBGMapMode], a
 	call WaitBGMap
-	ld b, SCGB_DIPLOMA
-	call GetSGBLayout
-	call SetDefaultBGPAndOBP
 
 .joypad_loop
 	call JoyTextDelay
@@ -72,20 +73,13 @@ _Option:
 	ret
 
 StringOptions:
-	db "TEXT SPEED<LF>"
-	db "        :<LF>"
-	db "BATTLE SCENE<LF>"
-	db "        :<LF>"
-	db "BATTLE STYLE<LF>"
-	db "        :<LF>"
-	db "SOUND<LF>"
-	db "        :<LF>"
-	db "PRINT<LF>"
-	db "        :<LF>"
-	db "MENU ACCOUNT<LF>"
-	db "        :<LF>"
-	db "FRAME<LF>"
-	db "        :TYPE<LF>"
+	db "TEXT SPEED  :<LF><LF>"
+	db "BATTLE SCENE:<LF><LF>"
+	db "BATTLE STYLE:<LF><LF>"
+	db "SOUND       :<LF><LF>"
+	db "PRINT       :<LF><LF>"
+	db "MENU ACCOUNT:<LF><LF>"
+	db "FRAME       :<LF><LF>"
 	db "CANCEL@"
 
 GetOptionPointer:
@@ -149,7 +143,7 @@ Options_TextSpeed:
 	ld e, [hl]
 	inc hl
 	ld d, [hl]
-	hlcoord 11, 3
+	hlcoord 13, 2
 	call PlaceString
 	and a
 	ret
@@ -219,7 +213,7 @@ Options_BattleScene:
 	ld de, .Off
 
 .Display:
-	hlcoord 11, 5
+	hlcoord 13, 4
 	call PlaceString
 	and a
 	ret
@@ -257,7 +251,7 @@ Options_BattleStyle:
 	ld de, .Set
 
 .Display:
-	hlcoord 11, 7
+	hlcoord 13, 6
 	call PlaceString
 	and a
 	ret
@@ -302,7 +296,7 @@ Options_Sound:
 	ld de, .Stereo
 
 .Display:
-	hlcoord 11, 9
+	hlcoord 13, 8
 	call PlaceString
 	and a
 	ret
@@ -356,7 +350,7 @@ Options_Print:
 	ld e, [hl]
 	inc hl
 	ld d, [hl]
-	hlcoord 11, 11
+	hlcoord 13, 10
 	call PlaceString
 	and a
 	ret
@@ -442,7 +436,7 @@ Options_MenuAccount:
 	ld de, .On
 
 .Display:
-	hlcoord 11, 13
+	hlcoord 13, 12
 	call PlaceString
 	and a
 	ret
@@ -474,7 +468,7 @@ Options_Frame:
 	ld [hl], a
 UpdateFrame:
 	ld a, [wTextboxFrame]
-	hlcoord 16, 15 ; where on the screen the number is drawn
+	hlcoord 13, 14 ; where on the screen the number is drawn
 	add '1'
 	ld [hl], a
 	call LoadFontsExtra

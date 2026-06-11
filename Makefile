@@ -157,7 +157,7 @@ $(info $(shell $(MAKE) -C tools))
 $(CHINESE_STAMP): FORCE tools/build_chinese_text.py tools/translation_map.tsv translations/zh-Hans/text.tsv
 	$(PYTHON) tools/build_chinese_text.py
 
-constants/chinese_charmap.asm constants/chinese_font_constants.asm gfx/font/chinese.1bpp: $(CHINESE_STAMP) ;
+constants/chinese_charmap.asm constants/chinese_font_constants.asm gfx/font/chinese_0.1bpp gfx/font/chinese_1.1bpp: $(CHINESE_STAMP) ;
 
 FORCE:
 

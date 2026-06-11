@@ -247,9 +247,7 @@ Serve1bppRequest::
 ; Copy [wRequested1bppSize] 1bpp tiles from [wRequested1bppSource] to [wRequested1bppDest]
 
 	ld [hSPBuffer], sp
-	ld a, [wRequested1bppSize]
-	rlca
-	and 1
+	ldh a, [hRequested1bppVBK]
 	ldh [rVBK], a
 
 ; Source
@@ -267,11 +265,11 @@ Serve1bppRequest::
 
 ; # tiles to copy
 	ld a, [wRequested1bppSize]
-	and $7f
 	ld b, a
 
 	xor a
 	ld [wRequested1bppSize], a
+	ldh [hRequested1bppVBK], a
 
 .next
 

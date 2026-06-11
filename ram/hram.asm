@@ -170,6 +170,10 @@ ELSE
 	ds 1
 ENDC
 
-	ds 20
+hChineseGlyphIndex:: dw
+hChineseGlyphTile:: db
+hChineseFontCacheInitialized:: db
+hChineseFontCacheNext:: db
+hRequested1bppVBK:: db
 
 ENDSECTION

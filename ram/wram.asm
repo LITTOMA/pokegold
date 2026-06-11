@@ -389,6 +389,10 @@ NEXTU
 wPuzzlePieces:: ds 6 * 6
 ENDU
 
+SECTION UNION "Miscellaneous", WRAM0
+
+wChineseFontCache:: ds CHINESE_FONT_CACHE_CHARS * 2
+
 
 SECTION "Unused Map Buffer", WRAM0
 

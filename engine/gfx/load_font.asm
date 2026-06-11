@@ -17,10 +17,6 @@ _LoadFontsExtra::
 	ld hl, vTiles2 tile '<BOLD_D>'
 	lb bc, BANK(FontExtra), 22 ; '<BOLD_D>' to 'ぉ'
 	call Get2bpp
-	ld de, ChineseFont
-	ld hl, vTiles2 tile CHINESE_FONT_TILE_START
-	lb bc, BANK(ChineseFont), CHINESE_FONT_CHARS * CHINESE_FONT_TILES_PER_CHAR
-	call Request1bppVBank1
 	jr LoadFrame
 
 _LoadFontsBattleExtra::

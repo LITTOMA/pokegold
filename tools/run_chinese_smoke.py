@@ -48,7 +48,13 @@ def main() -> None:
     pyboy.set_emulation_speed(0)
 
     def step(frames: int) -> None:
-        pyboy.tick(frames)
+        if frames <= 0:
+            return
+        if frames == 1:
+            pyboy.tick(1, True, False)
+            return
+        pyboy.tick(frames - 1, False, False)
+        pyboy.tick(1, True, False)
 
     def tap(button: str, hold_frames: int = 8, after_frames: int = 30) -> None:
         pyboy.button(button, hold_frames)
@@ -57,7 +63,7 @@ def main() -> None:
     def shot(name: str) -> Path:
         path = args.out_dir / f"{name}.png"
         pyboy.screen.image.save(path)
-        print(path)
+        print(path, flush=True)
         return path
 
     try:
@@ -67,15 +73,13 @@ def main() -> None:
         shot("01_after_start")
         tap("a", after_frames=700)
         shot("02_main_menu")
-        tap("a", hold_frames=20, after_frames=700)
-        shot("03_after_new_game")
-        tap("a", hold_frames=20, after_frames=700)
-        for index in range(1, 9):
-            step(30)
-            final_shot = shot(f"04_wait_{index:02d}")
+        tap("down", hold_frames=12, after_frames=80)
+        shot("03_main_menu_option_selected")
+        tap("a", hold_frames=12, after_frames=420)
+        final_shot = shot("04_options_menu")
         shutil.copy2(final_shot, args.out_dir / "chinese_smoke.png")
     finally:
-        pyboy.stop()
+        pyboy.stop(save=False)
 
 
 if __name__ == "__main__":

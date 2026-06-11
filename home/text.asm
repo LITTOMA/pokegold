@@ -123,7 +123,7 @@ SpeechTextbox::
 	hlcoord TEXTBOX_X, TEXTBOX_Y
 	ld b, TEXTBOX_INNERH
 	ld c, TEXTBOX_INNERW
-	jp Textbox
+	jr Textbox
 
 GameFreakText:: ; unreferenced
 	text "ゲームフりーク！" ; "GAMEFREAK!"
@@ -142,8 +142,7 @@ PrintText::
 
 PrintTextboxText::
 	bccoord TEXTBOX_INNERX, TEXTBOX_INNERY
-	call PrintTextboxTextAt
-	ret
+	jp PrintTextboxTextAt
 
 SetUpTextbox::
 	push hl
@@ -166,13 +165,9 @@ PlaceNextChar::
 	pop hl
 	ret
 
-DummyChar:: ; unreferenced
-	pop de
-	; fallthrough
-
 NextChar::
 	inc de
-	jp PlaceNextChar
+	jr PlaceNextChar
 
 CheckDict::
 MACRO dict
@@ -365,22 +360,6 @@ PlaceCommandCharacter::
 	ld l, c
 	pop de
 	jp NextChar
-
-TMCharText::      db "TM@"
-TrainerCharText:: db "TRAINER@"
-PCCharText::      db "PC@"
-RocketCharText::  db "ROCKET@"
-PlacePOKeText::   db "POKé@"
-KougekiText::     db "こうげき@"
-SixDotsCharText:: db "……@"
-EnemyText::       db "Enemy @"
-PlacePKMNText::   db "<PK><MN>@"
-PlacePOKEText::   db "<PO><KE>@"
-String_Space::    db " @"
-; These strings have been dummied out.
-PlaceJPRouteText::
-PlaceWatashiText::
-PlaceKokoWaText:: db "@"
 
 NextLineChar::
 	pop hl
