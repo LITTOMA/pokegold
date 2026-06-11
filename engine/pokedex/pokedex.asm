@@ -232,6 +232,7 @@ Pokedex_InitMainScreen:
 	call Pokedex_PrintListing
 	call Pokedex_SetBGMapMode_3ifDMG_4ifCGB
 	call Pokedex_ResetBGMapMode
+	call ResetChineseFontCache
 	call Pokedex_DrawMainScreenBG
 	ld a, POKEDEX_SCX
 	ldh [hSCX], a
@@ -252,6 +253,8 @@ Pokedex_InitMainScreen:
 	ld [wCurPartySpecies], a
 	ld a, SCGB_POKEDEX
 	call Pokedex_GetSGBLayout
+	call ResetChineseFontCache
+	call Pokedex_DrawMainScreenBG
 	farcall DrawPokedexListWindow
 	hlcoord 0, 17
 	ld de, String_START_SEARCH
@@ -284,6 +287,12 @@ Pokedex_UpdateMainScreen:
 	call Pokedex_UpdateCursorOAM
 	xor a
 	ldh [hBGMapMode], a
+	call ResetChineseFontCache
+	call Pokedex_DrawMainScreenBG
+	farcall DrawPokedexListWindow
+	hlcoord 0, 17
+	ld de, String_START_SEARCH
+	call Pokedex_PlaceString
 	call Pokedex_PrintListing
 	call Pokedex_SetBGMapMode3
 	call Pokedex_ResetBGMapMode
@@ -749,6 +758,7 @@ Pokedex_InitSearchResultsScreen:
 	call Pokedex_PlaceSearchResultsTypeStrings
 	ld a, 4
 	ld [wDexListingHeight], a
+	call ResetChineseFontCache
 	call Pokedex_PrintListing
 	call Pokedex_SetBGMapMode3
 	call Pokedex_ResetBGMapMode
@@ -784,6 +794,7 @@ Pokedex_UpdateSearchResultsScreen:
 	call Pokedex_UpdateSearchResultsCursorOAM
 	xor a
 	ldh [hBGMapMode], a
+	call ResetChineseFontCache
 	call Pokedex_PrintListing
 	call Pokedex_SetBGMapMode3
 	call Pokedex_ResetBGMapMode
@@ -1104,9 +1115,6 @@ Pokedex_DrawMainScreenBG:
 	hlcoord 0, 9
 	lb bc, 6, 7
 	call Pokedex_PlaceBorder
-	hlcoord 1, 11
-	ld de, String_SEEN
-	call Pokedex_PlaceString
 	ld hl, wPokedexSeen
 	ld b, wEndPokedexSeen - wPokedexSeen
 	call CountSetBits
@@ -1114,9 +1122,6 @@ Pokedex_DrawMainScreenBG:
 	hlcoord 5, 12
 	lb bc, 1, 3
 	call PrintNum
-	hlcoord 1, 14
-	ld de, String_OWN
-	call Pokedex_PlaceString
 	ld hl, wPokedexCaught
 	ld b, wEndPokedexCaught - wPokedexCaught
 	call CountSetBits
@@ -1144,12 +1149,54 @@ Pokedex_DrawMainScreenBG:
 	hlcoord 8, 16
 	ld [hl], $5b
 	call Pokedex_PlaceFrontpicTopLeftCorner
+	hlcoord 1, 1, wAttrmap
+	lb bc, 7, 7
+	ld a, $1
+	call Pokedex_FillBox
+	call Pokedex_PlaceMainScreenStatsLabels
+	ret
+
+Pokedex_PlaceMainScreenStatsLabels:
+	call Pokedex_PlaceMainScreenSeenLabel
+	jr Pokedex_PlaceMainScreenCaughtLabel
+
+Pokedex_PlaceMainScreenSeenLabel:
+	hlcoord 1, 11
+	ld de, String_SEEN
+	jr Pokedex_PlaceInvertedChineseString
+
+Pokedex_PlaceMainScreenCaughtLabel:
+	hlcoord 1, 14
+	ld de, String_OWN
+	; fallthrough
+
+Pokedex_PlaceInvertedChineseString:
+	ldh a, [hBGMapAddress]
+	push af
+	ldh a, [hBGMapAddress + 1]
+	push af
+	xor a ; LOW(vBGMap0)
+	ldh [hBGMapAddress], a
+	ld a, HIGH(vBGMap0)
+	ldh [hBGMapAddress + 1], a
+	ldh a, [hChineseFontInvert]
+	push af
+	ld a, $ff
+	ldh [hChineseFontInvert], a
+	call PlaceString
+	call ClearChineseLineMode
+	pop af
+	ldh [hChineseFontInvert], a
+	pop af
+	ldh [hBGMapAddress + 1], a
+	pop af
+	ldh [hBGMapAddress], a
 	ret
 
 String_SEEN:
-	db "SEEN", -1
+	db "发现@"
 String_OWN:
-	db "OWN", -1
+	db "捕获@"
 String_SELECT_OPTION:
 	db $3b, $48, $49, $4a, $44, $45, $46, $47 ; SELECT > OPTION
 	; fallthrough
@@ -1492,7 +1539,6 @@ Pokedex_PrintListing:
 	ld a, $ff
 	ldh [hChineseFontInvert], a
 	xor a
-	ldh [hChineseFontCacheInitialized], a
 	call .PrintListing
 	call ClearChineseLineMode
 	pop af
