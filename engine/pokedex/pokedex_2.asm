@@ -80,6 +80,7 @@ DisplayDexEntry:
 	call ResetChineseFontCache
 	ld a, $ff
 	ldh [hChineseFontInvert], a
+	call Pokedex_PlaceDexEntryMenuItems
 	call GetPokemonName
 	hlcoord 9, 2
 	call PlaceString ; mon species
@@ -210,6 +211,30 @@ DisplayDexEntry:
 
 .WeightLabel:
 	db "重@"
+
+Pokedex_PlaceDexEntryMenuItems:
+	hlcoord 1, 16
+	ld de, .Page
+	call PlaceString
+	hlcoord 6, 16
+	ld de, .Area
+	call PlaceString
+	hlcoord 11, 16
+	ld de, .Cry
+	call PlaceString
+	hlcoord 15, 16
+	ld de, .Print
+	call PlaceString
+	ret
+
+.Page:
+	db "PAGE@"
+.Area:
+	db "AREA@"
+.Cry:
+	db "CRY@"
+.Print:
+	db "PRNT@"
 
 POKeString: ; unreferenced
 	db "#@"
