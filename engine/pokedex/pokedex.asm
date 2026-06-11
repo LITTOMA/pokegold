@@ -1592,8 +1592,13 @@ Pokedex_PlaceCaughtSymbolIfCaught:
 	ret
 
 .place_caught_symbol
+	push hl
+	ld bc, SCREEN_WIDTH
+	add hl, bc
 	ld a, $4f
-	ld [hli], a
+	ld [hl], a
+	pop hl
+	inc hl
 	ret
 
 Pokedex_PlaceDefaultStringIfNotSeen:
