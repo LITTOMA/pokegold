@@ -397,11 +397,17 @@ def render_bdf_glyph(font: BdfFont, char: str) -> Image.Image:
                 pixels[x, y] = 0
 
     em_image = Image.new("L", (font.width, font.height), 255)
-    x = max(0, glyph.x_offset)
+    x = glyph.x_offset
     y = font.ascent - glyph.y_offset - glyph.height
-    x = max(0, min(font.width - glyph.width, x))
-    y = max(0, min(font.height - glyph.height, y))
-    em_image.paste(glyph_image, (x, y))
+    src_x0 = max(0, -x)
+    src_y0 = max(0, -y)
+    dst_x = max(0, x)
+    dst_y = max(0, y)
+    src_x1 = min(glyph.width, font.width - x)
+    src_y1 = min(glyph.height, font.height - y)
+    if src_x1 > src_x0 and src_y1 > src_y0:
+        box = (src_x0, src_y0, src_x1, src_y1)
+        em_image.paste(glyph_image.crop(box), (dst_x, dst_y))
 
     image = Image.new("L", (GLYPH_SIZE, GLYPH_SIZE), 255)
     image.paste(em_image, ((GLYPH_SIZE - font.width) // 2, GLYPH_SIZE - font.height))
