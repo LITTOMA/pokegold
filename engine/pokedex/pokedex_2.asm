@@ -183,6 +183,14 @@ DisplayDexEntry:
 	lb bc, 6, SCREEN_WIDTH - 2
 	hlcoord 2, 11
 	call ClearBox
+	hlcoord 2, 16
+	ld bc, SCREEN_WIDTH - 2
+	ld a, $39 ; bottom divider
+	call ByteFill
+	xor a
+	hlcoord 2, 16, wAttrmap
+	ld bc, SCREEN_WIDTH - 2
+	call ByteFill
 	hlcoord 1, 10
 	ld bc, SCREEN_WIDTH - 1
 	ld a, $61 ; horizontal divider
