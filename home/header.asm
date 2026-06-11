@@ -58,12 +58,11 @@ SECTION "joypad", ROM0[$0060]
 SECTION "Chinese Text Printer", ROM0[$0063]
 
 ChineseChar:
+	sub '<CN>'
+	ldh [hChineseGlyphIndex + 1], a
 	inc de
 	ld a, [de]
 	ldh [hChineseGlyphIndex], a
-	inc de
-	ld a, [de]
-	ldh [hChineseGlyphIndex + 1], a
 	push de
 	push hl
 	callfar GetChineseFontTile

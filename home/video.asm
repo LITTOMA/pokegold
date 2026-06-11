@@ -281,27 +281,38 @@ Serve1bppRequest::
 	xor a
 	ld [wRequested1bppSize], a
 
+	ldh a, [hRequested1bppInvert]
+	ld c, a
+
 .next
 
 rept 3
 	pop de
-	ld [hl], e
+	ld a, e
+	xor c
+	ld [hl], a
 	inc l
-	ld [hl], e
+	ld [hl], a
 	inc l
-	ld [hl], d
+	ld a, d
+	xor c
+	ld [hl], a
 	inc l
-	ld [hl], d
+	ld [hl], a
 	inc l
 endr
 	pop de
-	ld [hl], e
+	ld a, e
+	xor c
+	ld [hl], a
 	inc l
-	ld [hl], e
+	ld [hl], a
 	inc l
-	ld [hl], d
+	ld a, d
+	xor c
+	ld [hl], a
 	inc l
-	ld [hl], d
+	ld [hl], a
 
 	inc hl
 	dec b
@@ -328,6 +339,7 @@ endr
 	xor a
 	ldh [rVBK], a
 	ldh [hRequested1bppVBK], a
+	ldh [hRequested1bppInvert], a
 	ret
 
 Serve2bppRequest::

@@ -32,12 +32,16 @@ MANIFEST = ROOT / "gfx" / "font" / "chinese_chars.tsv"
 ASM_SUFFIX = ".asm"
 GLYPH_SIZE = 16
 TILE_SIZE = 8
-MAX_CHINESE_CHARS = 1024
+MAX_CHINESE_CHARS = 2048
 CHINESE_FONT_BANK_CHARS = 512
+CHINESE_FONT_BANK_COUNT = MAX_CHINESE_CHARS // CHINESE_FONT_BANK_CHARS
+CHINESE_TEXT_CODE_START = 0x17
+DNAME_DEFAULT_BYTES = 10
 TOKEN_PREFIX = "CN"
-INCLUDE_RE = re.compile(r'^(\s*INCLUDE\s+")([^"]+)(".*)$')
+INCLUDE_RE = re.compile(r'^([^;"]*\bINCLUDE\s+")([^"]+)(".*)$')
 STRING_RE = re.compile(r'"((?:[^"\\]|\\.)*)"')
 CHARMAP_RE = re.compile(r'^\s*charmap\s+"((?:[^"\\]|\\.)*)"')
+DEX_ENTRY_TEXT_RE = re.compile(r'^(\s*)(db|next|page)(\s+)"((?:[^"\\]|\\.)*)"(.*)$')
 
 
 def read_base_charmap_chars() -> set[str]:
@@ -424,7 +428,7 @@ def blank_glyph_bytes() -> bytes:
 
 def write_font(font_path: Path, chars: list[str]) -> bool:
     font = load_bdf_font(font_path)
-    font_banks = [bytearray(), bytearray()]
+    font_banks = [bytearray() for _ in range(CHINESE_FONT_BANK_COUNT)]
     preview = Image.new("L", (max(1, len(chars)) * GLYPH_SIZE, GLYPH_SIZE), 255)
 
     for index, char in enumerate(chars):
@@ -458,7 +462,7 @@ def write_generated_includes(chars: list[str]) -> bool:
         token = f"<{TOKEN_PREFIX}{index:03X}>"
         low = index & 0xff
         high = index >> 8
-        charmap_lines.append(f'\tcharmap "{token}", $17, ${low:02x}, ${high:02x} ; {char}')
+        charmap_lines.append(f'\tcharmap "{token}", ${CHINESE_TEXT_CODE_START + high:02x}, ${low:02x} ; {char}')
     changed = write_text_if_changed(ROOT / "constants" / "chinese_charmap.asm", "\n".join(charmap_lines) + "\n")
 
     constants = [
@@ -489,11 +493,96 @@ def replace_line_strings(line: str, source_translations: dict[str, Deque[str]]) 
     return "".join(result)
 
 
+def add_chinese_dname_length(line: str) -> str:
+    match = re.match(r'^(\s*dname\s+"((?:[^"\\]|\\.)*)")(\s*)(;.*)?$', line)
+    if not match:
+        return line
+    text = match.group(2)
+    chinese_chars = sum(1 for char in text if uses_chinese_font(char))
+    if not chinese_chars:
+        return line
+    encoded_len = len(text) + chinese_chars
+    if encoded_len > DNAME_DEFAULT_BYTES:
+        raise SystemExit(f"dname is longer than {DNAME_DEFAULT_BYTES} encoded bytes: {text}")
+    dname_chars = DNAME_DEFAULT_BYTES - chinese_chars
+    comment = match.group(4) or ""
+    return f'{match.group(1)}, {dname_chars}{match.group(3)}{comment}'
+
+
+def is_pokedex_entry_file(rel: Path) -> bool:
+    parts = rel.parts
+    return (
+        len(parts) >= 5
+        and parts[0] == "data"
+        and parts[1] == "pokemon"
+        and parts[2] == "dex_entries"
+        and parts[-1].endswith(ASM_SUFFIX)
+    )
+
+
+def split_line_ending(line: str) -> tuple[str, str]:
+    if line.endswith("\r\n"):
+        return line[:-2], "\r\n"
+    if line.endswith("\n"):
+        return line[:-1], "\n"
+    return line, ""
+
+
+def normalize_dex_entry_text(text: str) -> str:
+    text = text.replace("<NULL>", "")
+    return text.rstrip("@")
+
+
+def reflow_pokedex_entry_lines(lines: list[str]) -> list[str]:
+    try:
+        height_index = next(index for index, line in enumerate(lines) if "; height, weight" in line)
+    except StopIteration:
+        return lines
+
+    text_indices: list[int] = []
+    text_values: list[str] = []
+    for index in range(height_index + 1, len(lines)):
+        body, _ending = split_line_ending(lines[index])
+        match = DEX_ENTRY_TEXT_RE.match(body)
+        if not match:
+            continue
+        text_indices.append(index)
+        text_values.append(normalize_dex_entry_text(match.group(4)))
+
+    if not text_indices:
+        return lines
+
+    text_values = [text for text in text_values if text]
+    if not text_values:
+        text_values = [""]
+    page_count = max(1, (len(text_values) + 1) // 2)
+
+    body, ending = split_line_ending(lines[height_index])
+    result = lines[: height_index + 1]
+    result.append(f"\tdb {page_count} ; page count{ending or chr(10)}")
+
+    for index, text in enumerate(text_values):
+        if index and index % 2 == 0:
+            result.append(ending or "\n")
+        if index == 0:
+            macro = "db  "
+        elif index % 2 == 0:
+            macro = "page"
+        else:
+            macro = "next"
+        suffix = "@" if index == len(text_values) - 1 else ""
+        result.append(f'\t{macro} "{asm_string(text + suffix)}"{ending or chr(10)}')
+
+    result.extend(lines[text_indices[-1] + 1 :])
+    return result
+
+
 def convert_line(
     line: str,
     char_to_token: dict[str, str],
     out_root: Path,
     source_translations: dict[str, Deque[str]] | None = None,
+    encode_chinese: bool = True,
 ) -> str:
     ending = ""
     if line.endswith("\r\n"):
@@ -508,6 +597,9 @@ def convert_line(
             return f'{include_match.group(1)}{out_root.as_posix()}/{include_path}{include_match.group(3)}{ending}'
 
     line = replace_line_strings(line, source_translations or {})
+    line = add_chinese_dname_length(line)
+    if not encode_chinese:
+        return line + ending
     result: list[str] = []
     in_string = False
     escaped = False
@@ -554,9 +646,20 @@ def write_preprocessed_sources(
             source: deque(translations)
             for source, translations in source_translations.get(rel, {}).items()
         }
-        converted_lines: list[str] = []
-        for line in lines:
-            converted_lines.append(convert_line(line, char_to_token, out_root, file_source_translations))
+        if is_pokedex_entry_file(rel):
+            prepared_lines = [
+                convert_line(line, char_to_token, out_root, file_source_translations, encode_chinese=False)
+                for line in lines
+            ]
+            prepared_lines = reflow_pokedex_entry_lines(prepared_lines)
+            converted_lines = [
+                convert_line(line, char_to_token, out_root)
+                for line in prepared_lines
+            ]
+        else:
+            converted_lines = []
+            for line in lines:
+                converted_lines.append(convert_line(line, char_to_token, out_root, file_source_translations))
         converted = "".join(converted_lines)
         changed |= write_text_if_changed(out_path, converted)
     return changed

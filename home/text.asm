@@ -27,6 +27,7 @@ ClearBox::
 
 ClearTilemap::
 ; Fill wTilemap with blank tiles.
+	call ResetChineseFontCache
 
 	ld a, PAL_BG_TEXT
 	hlcoord 0, 0, wAttrmap
@@ -163,6 +164,15 @@ ClearChineseLineMode::
 	ldh [hChineseLineActive], a
 	ret
 
+ResetChineseFontCache::
+	xor a
+	ldh [hChineseFontCacheInitialized], a
+	ldh [hChineseFontCacheNext], a
+	ldh [hChineseLineActive], a
+	ldh [hChineseFontInvert], a
+	ldh [hRequested1bppInvert], a
+	ret
+
 PlaceString::
 	call ClearChineseLineMode
 
@@ -204,7 +214,10 @@ MACRO dict
 ENDM
 
 	cp '<CN>'
-	jp z, ChineseChar
+	jr c, .not_chinese
+	cp '<BSP>'
+	jp c, ChineseChar
+.not_chinese
 	dict '<LINE>',    LineChar
 	dict '<NEXT>',    NextLineChar
 	dict '<NULL>',    NullChar

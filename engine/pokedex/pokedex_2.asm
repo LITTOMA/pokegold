@@ -77,15 +77,18 @@ DoDexSearchSlowpokeFrame:
 	db -1
 
 DisplayDexEntry:
+	call ResetChineseFontCache
+	ld a, $ff
+	ldh [hChineseFontInvert], a
 	call GetPokemonName
-	hlcoord 9, 3
+	hlcoord 9, 2
 	call PlaceString ; mon species
 	ld a, [wTempSpecies]
 	ld b, a
 	call GetDexEntryPointer
 	ld a, b
 	push af
-	hlcoord 9, 5
+	hlcoord 9, 4
 	call PlaceFarString ; dex species
 	ld h, b
 	ld l, c
@@ -105,7 +108,17 @@ DisplayDexEntry:
 	call CheckCaughtMon
 	pop hl
 	pop bc
-	ret z
+	jp z, ResetChineseFontCache
+	push hl
+	push bc
+	hlcoord 9, 6
+	ld de, .HeightLabel
+	call PlaceString
+	hlcoord 9, 8
+	ld de, .WeightLabel
+	call PlaceString
+	pop bc
+	pop hl
 ; Get the height of the Pokemon.
 	ld a, [wCurPartySpecies]
 	ld [wCurSpecies], a
@@ -128,11 +141,11 @@ DisplayDexEntry:
 	ld hl, sp+0
 	ld d, h
 	ld e, l
-	hlcoord 12, 7
+	hlcoord 12, 6
 	lb bc, 2, (2 << 4) | 4
 	call PrintNum
 ; Replace the decimal point with a ft symbol
-	hlcoord 14, 7
+	hlcoord 14, 6
 	ld [hl], $5e
 	pop af
 	pop hl
@@ -154,14 +167,14 @@ DisplayDexEntry:
 	ld hl, sp+0
 	ld d, h
 	ld e, l
-	hlcoord 11, 9
+	hlcoord 11, 8
 	lb bc, 2, (4 << 4) | 5
 	call PrintNum
 	pop de
 
 .skip_weight
-; Page 1
-	lb bc, 5, SCREEN_WIDTH - 2
+; Page
+	lb bc, 6, SCREEN_WIDTH - 2
 	hlcoord 2, 11
 	call ClearBox
 	hlcoord 1, 10
@@ -176,43 +189,27 @@ DisplayDexEntry:
 	hlcoord 1, 10
 	ld [hl], $56 ; P.
 	inc hl
-	ld [hl], $57 ; 1
-	pop de
-	inc de
-	pop af
-	hlcoord 2, 11
-	push af
-	call PlaceFarString
-	pop bc
 	ld a, [wPokedexStatus]
-	or a ; check for page 2
-	ret z
-
-; Page 2
-	push bc
-	push de
-	lb bc, 5, SCREEN_WIDTH - 2
-	hlcoord 2, 11
-	call ClearBox
-	hlcoord 1, 10
-	ld bc, SCREEN_WIDTH - 1
-	ld a, $61
-	call ByteFill
-	; page number
-	hlcoord 1, 9
-	ld [hl], $55
-	inc hl
-	ld [hl], $55
-	hlcoord 1, 10
-	ld [hl], $56 ; P.
-	inc hl
-	ld [hl], $58 ; 2
+	add $57 ; 1
+	ld [hl], a
 	pop de
-	inc de
 	pop af
+	ld a, [wTempSpecies]
+	ld b, a
+	ld a, [wPokedexStatus]
+	inc a
+	ld c, a
+	call GetDexEntryPagePointer
 	hlcoord 2, 11
+	ld a, b
 	call PlaceFarString
-	ret
+	jp ResetChineseFontCache
+
+.HeightLabel:
+	db "高@"
+
+.WeightLabel:
+	db "重@"
 
 POKeString: ; unreferenced
 	db "#@"
@@ -254,6 +251,8 @@ GetDexEntryPagePointer:
 rept 4
 	inc hl
 endr
+; skip page count
+	inc hl
 ; if c != 1: skip entry
 	dec c
 	jr z, .done
@@ -268,6 +267,27 @@ endr
 .done
 	ld d, h
 	ld e, l
+	pop hl
+	ret
+
+GetDexEntryPageCount:
+	call GetDexEntryPointer
+	push hl
+	ld h, d
+	ld l, e
+; skip species name
+.loop
+	ld a, b
+	call GetFarByte
+	inc hl
+	cp '@'
+	jr nz, .loop
+; skip height and weight
+rept 4
+	inc hl
+endr
+	ld a, b
+	call GetFarByte
 	pop hl
 	ret
 

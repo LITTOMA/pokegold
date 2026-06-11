@@ -343,6 +343,8 @@ Pokedex_InitDexEntryScreen:
 	ld [wCurPartySpecies], a
 	ld a, SCGB_POKEDEX
 	call Pokedex_GetSGBLayout
+	farcall DisplayDexEntry
+	call WaitBGMap
 	ld a, [wCurPartySpecies]
 	call PlayMonCry
 	call Pokedex_IncrementDexPointer
@@ -385,8 +387,18 @@ Pokedex_UpdateDexEntryScreen:
 
 Pokedex_Page:
 	ld a, [wPokedexStatus]
-	xor 1 ; toggle page
+	inc a
 	ld [wPokedexStatus], a
+	call Pokedex_GetSelectedMon
+	ld b, a
+	farcall GetDexEntryPageCount
+	ld b, a
+	ld a, [wPokedexStatus]
+	cp b
+	jr c, .got_page
+	xor a
+	ld [wPokedexStatus], a
+.got_page
 	call Pokedex_GetSelectedMon
 	ld [wPrevDexEntry], a
 	farcall DisplayDexEntry
@@ -413,6 +425,8 @@ Pokedex_ReinitDexEntryScreen:
 	ld [wCurPartySpecies], a
 	ld a, SCGB_POKEDEX
 	call Pokedex_GetSGBLayout
+	farcall DisplayDexEntry
+	call WaitBGMap
 	ld a, [wCurPartySpecies]
 	call PlayMonCry
 	ld hl, wJumptableIndex
@@ -461,6 +475,8 @@ DexEntryScreen_MenuActionJumptable:
 	ld [wCurPartySpecies], a
 	ld a, SCGB_POKEDEX
 	call Pokedex_GetSGBLayout
+	farcall DisplayDexEntry
+	call WaitBGMap
 	ret
 
 .Cry:
@@ -1156,10 +1172,10 @@ Pokedex_DrawDexEntryScreenBG:
 	ld bc, 18
 	ld a, ' '
 	call ByteFill
-	hlcoord 9, 7
+	hlcoord 9, 6
 	ld de, .Height
 	call Pokedex_PlaceString
-	hlcoord 9, 9
+	hlcoord 9, 8
 	ld de, .Weight
 	call Pokedex_PlaceString
 	hlcoord 0, 17
@@ -1171,9 +1187,9 @@ Pokedex_DrawDexEntryScreenBG:
 .Number: ; unreferenced
 	db $5c, $5d, -1 ; No.
 .Height:
-	db "HT  ?", $5e, "??", $5f, -1 ; HT  ?'??"
+	db "     ", $5e, "  ", $5f, -1
 .Weight:
-	db "WT   ???lb", -1
+	db "        lb", -1
 .MenuItems:
 	db $3b, " PAGE AREA CRY PRNT", -1
 
@@ -2551,6 +2567,8 @@ _NewPokedexEntry:
 	predef GetMonFrontpic
 	ld a, SCGB_POKEDEX
 	call Pokedex_GetSGBLayout
+	farcall DisplayDexEntry
+	call WaitBGMap
 	ld a, [wCurPartySpecies]
 	call PlayMonCry
 	ret

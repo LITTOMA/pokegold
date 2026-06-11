@@ -4,7 +4,7 @@
 
 	charmap "<NULL>",    $00
 	charmap "<CR>",      $16
-	charmap "<CN>",      $17 ; followed by a Chinese glyph index
+	charmap "<CN>",      $17 ; Chinese glyph page 0, followed by a glyph byte
 	charmap "<BSP>",     $1f ; breakable space (usually " ", or "<LF>" on the Town Map)
 	charmap "<LF>",      $22
 	charmap "<POKE>",    $24 ; "<PO><KE>"
