@@ -29,9 +29,11 @@ GetChineseFontTile::
 
 	ldh a, [hChineseFontCacheNext]
 	ld c, a
-	ld a, c
 	inc a
-	and CHINESE_FONT_CACHE_CHARS - 1
+	cp CHINESE_FONT_CACHE_CHARS
+	jr c, .next_cache_slot
+	xor a
+.next_cache_slot
 	ldh [hChineseFontCacheNext], a
 	ld h, 0
 	ld l, c
@@ -70,11 +72,15 @@ LoadChineseGlyph:
 	bit 1, a
 	jr nz, .font1
 	ld de, ChineseFont0
-	ld a, BANK(ChineseFont0)
+	ld a, BANK(ChineseFont0) | $80
+	ldh [hRequested1bppVBK], a
+	and $7f
 	jr .got_font
 .font1
 	ld de, ChineseFont1
-	ld a, BANK(ChineseFont1)
+	ld a, BANK(ChineseFont1) | $80
+	ldh [hRequested1bppVBK], a
+	and $7f
 .got_font
 	ld b, a
 	add hl, de
@@ -93,54 +99,7 @@ LoadChineseGlyph:
 	pop bc
 	pop de
 	ld c, CHINESE_FONT_TILES_PER_CHAR
-	jp Request1bppVBank1
-
-Request1bppVBank1:
-; Load 1bpp at b:de to occupy c tiles of hl in VRAM bank 1.
-	ldh a, [hBGMapMode]
-	push af
-	xor a
-	ldh [hBGMapMode], a
-
-	ldh a, [hROMBank]
-	push af
-	ld a, b
-	rst Bankswitch
-
-	ld a, e
-	ld [wRequested1bppSource], a
-	ld a, d
-	ld [wRequested1bppSource + 1], a
-	ld a, l
-	ld [wRequested1bppDest], a
-	ld a, h
-	ld [wRequested1bppDest + 1], a
-	ld a, 1
-	ldh [hRequested1bppVBK], a
-.loop
-	ld a, c
-	cp TILES_PER_CYCLE
-	jr nc, .cycle
-
-	ld [wRequested1bppSize], a
-	call DelayFrame
-
-	pop af
-	rst Bankswitch
-
-	pop af
-	ldh [hBGMapMode], a
-	ret
-
-.cycle
-	ld a, TILES_PER_CYCLE
-	ld [wRequested1bppSize], a
-
-	call DelayFrame
-	ld a, c
-	sub TILES_PER_CYCLE
-	ld c, a
-	jr .loop
+	jp Request1bpp
 
 InitChineseFontCache::
 	xor a

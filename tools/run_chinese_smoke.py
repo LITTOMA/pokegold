@@ -44,7 +44,7 @@ def main() -> None:
             save_file.unlink()
 
     empty_ram = io.BytesIO(bytes([0xFF]) * 32768)
-    pyboy = PyBoy(str(smoke_rom), ram_file=empty_ram, window="null")
+    pyboy = PyBoy(str(smoke_rom), ram_file=empty_ram, window="null", cgb=True)
     pyboy.set_emulation_speed(0)
 
     def step(frames: int) -> None:

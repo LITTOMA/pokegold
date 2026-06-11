@@ -25,7 +25,7 @@ _Option:
 	call GetSGBLayout
 	call SetDefaultBGPAndOBP
 	callfar InitChineseFontCache
-	hlcoord 2, 1
+	hlcoord 3, 1
 	ld de, StringOptions
 	call PlaceString
 	xor a

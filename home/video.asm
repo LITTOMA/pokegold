@@ -246,9 +246,20 @@ Serve1bppRequest::
 
 ; Copy [wRequested1bppSize] 1bpp tiles from [wRequested1bppSource] to [wRequested1bppDest]
 
-	ld [hSPBuffer], sp
 	ldh a, [hRequested1bppVBK]
+	bit 7, a
+	jr z, .set_vram_bank
+	ld b, a
+	ldh a, [hROMBank]
+	push af
+	ld a, b
+	and $7f
+	rst Bankswitch
+	ld a, 1
+.set_vram_bank
 	ldh [rVBK], a
+
+	ld [hSPBuffer], sp
 
 ; Source
 	ld hl, wRequested1bppSource
@@ -269,7 +280,6 @@ Serve1bppRequest::
 
 	xor a
 	ld [wRequested1bppSize], a
-	ldh [hRequested1bppVBK], a
 
 .next
 
@@ -309,8 +319,15 @@ endr
 	ldh a, [hSPBuffer + 1]
 	ld h, a
 	ld sp, hl
+	ldh a, [hRequested1bppVBK]
+	bit 7, a
+	jr z, .skip_restore_bank
+	pop af
+	rst Bankswitch
+.skip_restore_bank
 	xor a
 	ldh [rVBK], a
+	ldh [hRequested1bppVBK], a
 	ret
 
 Serve2bppRequest::

@@ -9112,13 +9112,13 @@ engine.menus.naming_screen:145:0	menu	engine/menus/naming_screen.asm	145	0	db	RI
 engine.menus.naming_screen:157:0	menu	engine/menus/naming_screen.asm	157	0	db	MOTHER'S NAME?@	妈妈名字?
 engine.menus.naming_screen:181:0	menu	engine/menus/naming_screen.asm	181	0	db	BOX NAME?@	箱子名字?
 engine.menus.naming_screen:959:0	menu	engine/menus/naming_screen.asm	959	0	db	メールを　かいてね@	请写邮件
-engine.menus.options_menu:75:0	menu	engine/menus/options_menu.asm	75	0	db	TEXT SPEED  :<LF><LF>	文字速度  :<LF><LF>
-engine.menus.options_menu:76:0	menu	engine/menus/options_menu.asm	76	0	db	BATTLE SCENE:<LF><LF>	战斗动画  :<LF><LF>
-engine.menus.options_menu:77:0	menu	engine/menus/options_menu.asm	77	0	db	BATTLE STYLE:<LF><LF>	战斗模式  :<LF><LF>
-engine.menus.options_menu:78:0	menu	engine/menus/options_menu.asm	78	0	db	SOUND       :<LF><LF>	声音      :<LF><LF>
-engine.menus.options_menu:79:0	menu	engine/menus/options_menu.asm	79	0	db	PRINT       :<LF><LF>	打印      :<LF><LF>
-engine.menus.options_menu:80:0	menu	engine/menus/options_menu.asm	80	0	db	MENU ACCOUNT:<LF><LF>	菜单说明  :<LF><LF>
-engine.menus.options_menu:81:0	menu	engine/menus/options_menu.asm	81	0	db	FRAME       :<LF><LF>	边框      :<LF><LF>
+engine.menus.options_menu:75:0	menu	engine/menus/options_menu.asm	75	0	db	TEXT SPEED  :<LF><LF>	文字速度 :<LF><LF>
+engine.menus.options_menu:76:0	menu	engine/menus/options_menu.asm	76	0	db	BATTLE SCENE:<LF><LF>	战斗动画 :<LF><LF>
+engine.menus.options_menu:77:0	menu	engine/menus/options_menu.asm	77	0	db	BATTLE STYLE:<LF><LF>	战斗模式 :<LF><LF>
+engine.menus.options_menu:78:0	menu	engine/menus/options_menu.asm	78	0	db	SOUND       :<LF><LF>	声音     :<LF><LF>
+engine.menus.options_menu:79:0	menu	engine/menus/options_menu.asm	79	0	db	PRINT       :<LF><LF>	打印     :<LF><LF>
+engine.menus.options_menu:80:0	menu	engine/menus/options_menu.asm	80	0	db	MENU ACCOUNT:<LF><LF>	菜单说明 :<LF><LF>
+engine.menus.options_menu:81:0	menu	engine/menus/options_menu.asm	81	0	db	FRAME       :<LF><LF>	边框     :<LF><LF>
 engine.menus.options_menu:82:0	menu	engine/menus/options_menu.asm	82	0	db	CANCEL@	取消
 engine.menus.options_menu:156:0	menu	engine/menus/options_menu.asm	156	0	db	FAST@	快
 engine.menus.options_menu:157:0	menu	engine/menus/options_menu.asm	157	0	db	MID @	中
@@ -9148,12 +9148,12 @@ engine.menus.start_menu:196:0	menu	engine/menus/start_menu.asm	196	0	db	<POKE>GE
 engine.menus.start_menu:197:0	menu	engine/menus/start_menu.asm	197	0	db	QUIT@	退出
 engine.menus.start_menu:200:0	menu	engine/menus/start_menu.asm	200	0	db	#MON	宝可梦
 engine.menus.start_menu:201:0	menu	engine/menus/start_menu.asm	201	0	next	database@	资料库
-engine.menus.start_menu:204:0	menu	engine/menus/start_menu.asm	204	0	db	Party <PKMN>	同行宝可梦
+engine.menus.start_menu:204:0	menu	engine/menus/start_menu.asm	204	0	db	Party <PKMN>	队伍
 engine.menus.start_menu:205:0	menu	engine/menus/start_menu.asm	205	0	next	status@	状态
 engine.menus.start_menu:208:0	menu	engine/menus/start_menu.asm	208	0	db	Contains	查看
 engine.menus.start_menu:209:0	menu	engine/menus/start_menu.asm	209	0	next	items@	道具
-engine.menus.start_menu:212:0	menu	engine/menus/start_menu.asm	212	0	db	Trainer's	训练家的
-engine.menus.start_menu:213:0	menu	engine/menus/start_menu.asm	213	0	next	key device@	重要装置
+engine.menus.start_menu:212:0	menu	engine/menus/start_menu.asm	212	0	db	Trainer's	重要
+engine.menus.start_menu:213:0	menu	engine/menus/start_menu.asm	213	0	next	key device@	装置
 engine.menus.start_menu:216:0	menu	engine/menus/start_menu.asm	216	0	db	Your own	自己的
 engine.menus.start_menu:217:0	menu	engine/menus/start_menu.asm	217	0	next	status@	状态
 engine.menus.start_menu:220:0	menu	engine/menus/start_menu.asm	220	0	db	Save your	保存你的

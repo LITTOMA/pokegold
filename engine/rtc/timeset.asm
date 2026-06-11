@@ -59,7 +59,7 @@ InitClock:
 	ld [hl], $1
 	hlcoord 11, 10
 	ld [hl], $2
-	hlcoord 4, 9
+	hlcoord 4, 8
 	call DisplayHourOClock
 	ld c, 10
 	call DelayFrames
@@ -89,7 +89,7 @@ InitClock:
 	ld [hl], $1
 	hlcoord 15, 10
 	ld [hl], $2
-	hlcoord 12, 9
+	hlcoord 12, 8
 	call DisplayMinutesWithMinString
 	ld c, 10
 	call DelayFrames
@@ -169,11 +169,10 @@ SetHour:
 	ld [hl], a
 
 .okay
-	hlcoord 4, 9
-	ld a, ' '
-	ld bc, 15
-	call ByteFill
-	hlcoord 4, 9
+	hlcoord 4, 8
+	lb bc, 2, 15
+	call ClearBox
+	hlcoord 4, 8
 	call DisplayHourOClock
 	call WaitBGMap
 	and a
@@ -258,11 +257,10 @@ SetMinutes:
 	inc a
 	ld [hl], a
 .finish_dpad
-	hlcoord 12, 9
-	ld a, ' '
-	ld bc, 7
-	call ByteFill
-	hlcoord 12, 9
+	hlcoord 12, 8
+	lb bc, 2, 7
+	call ClearBox
+	hlcoord 12, 8
 	call DisplayMinutesWithMinString
 	call WaitBGMap
 	and a
@@ -304,8 +302,9 @@ OakTimeWhatHoursText:
 	; What?@ @
 	text_far _OakTimeWhatHoursText
 	text_asm
-	hlcoord 1, 16
+	hlcoord 1, 15
 	call DisplayHourOClock
+	inc bc
 	ld hl, .OakTimeHoursQuestionMarkText
 	ret
 

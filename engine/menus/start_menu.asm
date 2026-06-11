@@ -260,6 +260,7 @@ StartMenu::
 	ld d, [hl]
 	ld e, a
 	pop hl
+	inc hl
 	call PlaceString
 	ret
 
@@ -381,7 +382,7 @@ endr
 	ld a, [hl]
 	push af
 	set NO_TEXT_SCROLL, [hl]
-	decoord 0, 13
+	decoord 1, 13
 	call .MenuDesc
 	pop af
 	ld [wOptions], a

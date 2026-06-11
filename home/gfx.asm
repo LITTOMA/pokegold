@@ -182,7 +182,7 @@ Request1bpp::
 	jr nc, .cycle
 
 	ld [wRequested1bppSize], a
-	call DelayFrame
+	call Wait1bppRequest
 
 	pop af
 	rst Bankswitch
@@ -195,11 +195,18 @@ Request1bpp::
 	ld a, TILES_PER_CYCLE
 	ld [wRequested1bppSize], a
 
-	call DelayFrame
+	call Wait1bppRequest
 	ld a, c
 	sub TILES_PER_CYCLE
 	ld c, a
 	jr .loop
+
+Wait1bppRequest:
+	call DelayFrame
+	ld a, [wRequested1bppSize]
+	and a
+	jr nz, Wait1bppRequest
+	ret
 
 Get2bpp::
 ; copy c 2bpp tiles from b:de to hl
@@ -254,28 +261,3 @@ Get1bpp::
 
 	pop hl
 	jp FarCopyBytesDouble
-
-DuplicateGet2bpp:: ; unreferenced
-	ldh a, [rLCDC]
-	add a
-	jp c, Request2bpp
-
-	push de
-	push hl
-
-; bank
-	ld a, b
-
-; bc = c * TILE_SIZE
-	ld h, 0
-	ld l, c
-	add hl, hl
-	add hl, hl
-	add hl, hl
-	add hl, hl
-	ld b, h
-	ld c, l
-
-	pop de
-	pop hl
-	jp FarCopyBytes
