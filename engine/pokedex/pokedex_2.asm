@@ -204,7 +204,7 @@ DisplayDexEntry:
 	ld [hl], $56 ; P.
 	inc hl
 	ld a, [wPokedexStatus]
-	add $57 ; 1
+	add '1'
 	ld [hl], a
 	pop de
 	pop af
@@ -267,7 +267,7 @@ rept 4
 endr
 ; skip page count
 	inc hl
-; if c != 1: skip entry
+; if c != 1: skip c - 1 entries
 	dec c
 	jr z, .done
 ; skip entry
@@ -276,6 +276,8 @@ endr
 	call GetFarByte
 	inc hl
 	cp '@'
+	jr nz, .loop2
+	dec c
 	jr nz, .loop2
 
 .done
@@ -302,6 +304,7 @@ rept 4
 endr
 	ld a, b
 	call GetFarByte
+	ld c, a ; FarCall restores a from c.
 	pop hl
 	ret
 
