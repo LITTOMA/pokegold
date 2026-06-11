@@ -82,7 +82,12 @@ ChineseChar:
 	push hl
 	ld bc, wAttrmap - wTilemap - 2
 	add hl, bc
+	ldh a, [hChineseFontInvert]
+	and a
+	ld a, BG_ATTR_VRAM_BANK_1
+	jr nz, .got_attr
 	ld a, PAL_BG_TEXT | BG_ATTR_VRAM_BANK_1
+.got_attr
 	ld [hli], a
 	ld [hli], a
 	ld bc, SCREEN_WIDTH - 2

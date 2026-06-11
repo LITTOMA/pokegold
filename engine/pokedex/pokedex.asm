@@ -216,6 +216,8 @@ Pokedex_Exit:
 Pokedex_InitMainScreen:
 	xor a
 	ldh [hBGMapMode], a
+	ld a, SCREEN_HEIGHT_PX
+	ldh [hWY], a
 	call ClearSprites
 	xor a
 	hlcoord 0, 0, wAttrmap
@@ -241,7 +243,7 @@ Pokedex_InitMainScreen:
 	ld a, $47
 .okay
 	ldh [hWX], a
-	xor a
+	ld a, SCREEN_HEIGHT_PX
 	ldh [hWY], a
 	call WaitBGMap
 
@@ -250,7 +252,6 @@ Pokedex_InitMainScreen:
 	ld [wCurPartySpecies], a
 	ld a, SCGB_POKEDEX
 	call Pokedex_GetSGBLayout
-	call Pokedex_UpdateCursorOAM
 	farcall DrawPokedexListWindow
 	hlcoord 0, 17
 	ld de, String_START_SEARCH
@@ -258,6 +259,9 @@ Pokedex_InitMainScreen:
 	ld a, 7
 	ld [wDexListingHeight], a
 	call Pokedex_PrintListing
+	call Pokedex_UpdateCursorOAM
+	xor a
+	ldh [hWY], a
 	call Pokedex_IncrementDexPointer
 	ret
 
@@ -1475,6 +1479,31 @@ Pokedex_PlaceBorder:
 	jr .row_loop
 
 Pokedex_PrintListing:
+	ldh a, [hBGMapAddress]
+	push af
+	ldh a, [hBGMapAddress + 1]
+	push af
+	xor a ; LOW(vBGMap1)
+	ldh [hBGMapAddress], a
+	ld a, HIGH(vBGMap1)
+	ldh [hBGMapAddress + 1], a
+	ldh a, [hChineseFontInvert]
+	push af
+	ld a, $ff
+	ldh [hChineseFontInvert], a
+	xor a
+	ldh [hChineseFontCacheInitialized], a
+	call .PrintListing
+	call ClearChineseLineMode
+	pop af
+	ldh [hChineseFontInvert], a
+	pop af
+	ldh [hBGMapAddress + 1], a
+	pop af
+	ldh [hBGMapAddress], a
+	ret
+
+.PrintListing:
 ; Prints the list of Pokémon on the main Pokédex screen.
 
 ; This check is completely useless.
@@ -2066,26 +2095,26 @@ Pokedex_PutNewModeABCModeCursorOAM:
 	ret
 
 .CursorOAM:
-	dbsprite  9,  3, -1,  3, $30, 7
-	dbsprite  9,  2, -1,  3, $31, 7
-	dbsprite 10,  2, -1,  3, $32, 7
-	dbsprite 11,  2, -1,  3, $32, 7
-	dbsprite 12,  2, -1,  3, $33, 7
-	dbsprite 16,  2,  0,  3, $33, 7 | OAM_XFLIP
-	dbsprite 17,  2,  0,  3, $32, 7 | OAM_XFLIP
-	dbsprite 18,  2,  0,  3, $32, 7 | OAM_XFLIP
-	dbsprite 19,  2,  0,  3, $31, 7 | OAM_XFLIP
-	dbsprite 19,  3,  0,  3, $30, 7 | OAM_XFLIP
-	dbsprite  9,  4, -1,  3, $30, 7 | OAM_YFLIP
-	dbsprite  9,  5, -1,  3, $31, 7 | OAM_YFLIP
-	dbsprite 10,  5, -1,  3, $32, 7 | OAM_YFLIP
-	dbsprite 11,  5, -1,  3, $32, 7 | OAM_YFLIP
-	dbsprite 12,  5, -1,  3, $33, 7 | OAM_YFLIP
-	dbsprite 16,  5,  0,  3, $33, 7 | OAM_XFLIP | OAM_YFLIP
-	dbsprite 17,  5,  0,  3, $32, 7 | OAM_XFLIP | OAM_YFLIP
-	dbsprite 18,  5,  0,  3, $32, 7 | OAM_XFLIP | OAM_YFLIP
-	dbsprite 19,  5,  0,  3, $31, 7 | OAM_XFLIP | OAM_YFLIP
-	dbsprite 19,  4,  0,  3, $30, 7 | OAM_XFLIP | OAM_YFLIP
+	dbsprite  9,  4, -1,  3, $30, 7
+	dbsprite  9,  3, -1,  3, $31, 7
+	dbsprite 10,  3, -1,  3, $32, 7
+	dbsprite 11,  3, -1,  3, $32, 7
+	dbsprite 12,  3, -1,  3, $33, 7
+	dbsprite 16,  3,  0,  3, $33, 7 | OAM_XFLIP
+	dbsprite 17,  3,  0,  3, $32, 7 | OAM_XFLIP
+	dbsprite 18,  3,  0,  3, $32, 7 | OAM_XFLIP
+	dbsprite 19,  3,  0,  3, $31, 7 | OAM_XFLIP
+	dbsprite 19,  4,  0,  3, $30, 7 | OAM_XFLIP
+	dbsprite  9,  5, -1,  3, $30, 7 | OAM_YFLIP
+	dbsprite  9,  6, -1,  3, $31, 7 | OAM_YFLIP
+	dbsprite 10,  6, -1,  3, $32, 7 | OAM_YFLIP
+	dbsprite 11,  6, -1,  3, $32, 7 | OAM_YFLIP
+	dbsprite 12,  6, -1,  3, $33, 7 | OAM_YFLIP
+	dbsprite 16,  6,  0,  3, $33, 7 | OAM_XFLIP | OAM_YFLIP
+	dbsprite 17,  6,  0,  3, $32, 7 | OAM_XFLIP | OAM_YFLIP
+	dbsprite 18,  6,  0,  3, $32, 7 | OAM_XFLIP | OAM_YFLIP
+	dbsprite 19,  6,  0,  3, $31, 7 | OAM_XFLIP | OAM_YFLIP
+	dbsprite 19,  5,  0,  3, $30, 7 | OAM_XFLIP | OAM_YFLIP
 	db -1
 
 Pokedex_UpdateSearchResultsCursorOAM:
@@ -2097,30 +2126,30 @@ Pokedex_UpdateSearchResultsCursorOAM:
 	ret
 
 .CursorOAM:
-	dbsprite  9,  3, -1,  3, $30, 7
-	dbsprite  9,  2, -1,  3, $31, 7
-	dbsprite 10,  2, -1,  3, $32, 7
-	dbsprite 11,  2, -1,  3, $32, 7
-	dbsprite 12,  2, -1,  3, $32, 7
-	dbsprite 13,  2, -1,  3, $33, 7
-	dbsprite 16,  2, -2,  3, $33, 7 | OAM_XFLIP
-	dbsprite 17,  2, -2,  3, $32, 7 | OAM_XFLIP
-	dbsprite 18,  2, -2,  3, $32, 7 | OAM_XFLIP
-	dbsprite 19,  2, -2,  3, $32, 7 | OAM_XFLIP
-	dbsprite 20,  2, -2,  3, $31, 7 | OAM_XFLIP
-	dbsprite 20,  3, -2,  3, $30, 7 | OAM_XFLIP
-	dbsprite  9,  4, -1,  3, $30, 7 | OAM_YFLIP
-	dbsprite  9,  5, -1,  3, $31, 7 | OAM_YFLIP
-	dbsprite 10,  5, -1,  3, $32, 7 | OAM_YFLIP
-	dbsprite 11,  5, -1,  3, $32, 7 | OAM_YFLIP
-	dbsprite 12,  5, -1,  3, $32, 7 | OAM_YFLIP
-	dbsprite 13,  5, -1,  3, $33, 7 | OAM_YFLIP
-	dbsprite 16,  5, -2,  3, $33, 7 | OAM_XFLIP | OAM_YFLIP
-	dbsprite 17,  5, -2,  3, $32, 7 | OAM_XFLIP | OAM_YFLIP
-	dbsprite 18,  5, -2,  3, $32, 7 | OAM_XFLIP | OAM_YFLIP
-	dbsprite 19,  5, -2,  3, $32, 7 | OAM_XFLIP | OAM_YFLIP
-	dbsprite 20,  5, -2,  3, $31, 7 | OAM_XFLIP | OAM_YFLIP
-	dbsprite 20,  4, -2,  3, $30, 7 | OAM_XFLIP | OAM_YFLIP
+	dbsprite  9,  4, -1,  3, $30, 7
+	dbsprite  9,  3, -1,  3, $31, 7
+	dbsprite 10,  3, -1,  3, $32, 7
+	dbsprite 11,  3, -1,  3, $32, 7
+	dbsprite 12,  3, -1,  3, $32, 7
+	dbsprite 13,  3, -1,  3, $33, 7
+	dbsprite 16,  3, -2,  3, $33, 7 | OAM_XFLIP
+	dbsprite 17,  3, -2,  3, $32, 7 | OAM_XFLIP
+	dbsprite 18,  3, -2,  3, $32, 7 | OAM_XFLIP
+	dbsprite 19,  3, -2,  3, $32, 7 | OAM_XFLIP
+	dbsprite 20,  3, -2,  3, $31, 7 | OAM_XFLIP
+	dbsprite 20,  4, -2,  3, $30, 7 | OAM_XFLIP
+	dbsprite  9,  5, -1,  3, $30, 7 | OAM_YFLIP
+	dbsprite  9,  6, -1,  3, $31, 7 | OAM_YFLIP
+	dbsprite 10,  6, -1,  3, $32, 7 | OAM_YFLIP
+	dbsprite 11,  6, -1,  3, $32, 7 | OAM_YFLIP
+	dbsprite 12,  6, -1,  3, $32, 7 | OAM_YFLIP
+	dbsprite 13,  6, -1,  3, $33, 7 | OAM_YFLIP
+	dbsprite 16,  6, -2,  3, $33, 7 | OAM_XFLIP | OAM_YFLIP
+	dbsprite 17,  6, -2,  3, $32, 7 | OAM_XFLIP | OAM_YFLIP
+	dbsprite 18,  6, -2,  3, $32, 7 | OAM_XFLIP | OAM_YFLIP
+	dbsprite 19,  6, -2,  3, $32, 7 | OAM_XFLIP | OAM_YFLIP
+	dbsprite 20,  6, -2,  3, $31, 7 | OAM_XFLIP | OAM_YFLIP
+	dbsprite 20,  5, -2,  3, $30, 7 | OAM_XFLIP | OAM_YFLIP
 	db -1
 
 Pokedex_LoadCursorOAM:
