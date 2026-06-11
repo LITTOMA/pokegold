@@ -99,6 +99,8 @@ StartMenu::
 	callfar InitChineseFontCache
 	call ._DrawMenuAccount
 	call SetUpMenu
+	call .HideMenuSprites
+	call DelayFrame
 	ld hl, w2DMenuCursorInitY
 	inc [hl]
 	ld a, $ff
@@ -287,6 +289,49 @@ endr
 	ret
 .none
 	pop de
+	ret
+
+.HideMenuSprites:
+; Clip overworld OAM tiles covered by the widened Chinese START menu.
+	ld a, [wMenuBorderLeftCoord]
+	add a
+	add a
+	add a
+	ld b, a
+	ld de, OBJ_SIZE
+	ld hl, wShadowOAMSprite00
+	ld c, OAM_COUNT
+.HideRightMenuSprites:
+	inc hl
+	ld a, [hld]
+	cp b
+	jr c, .NextRightMenuSprite
+	jr z, .NextRightMenuSprite
+	ld a, OAM_YCOORD_HIDDEN
+	ld [hl], a
+.NextRightMenuSprite:
+	add hl, de
+	dec c
+	jr nz, .HideRightMenuSprites
+
+	call .IsMenuAccountOn
+	ret z
+	ld hl, wShadowOAMSprite00
+	ld c, OAM_COUNT
+.HideMenuAccountSprites:
+	ld a, [hl]
+	cp 12 * TILE_WIDTH + 9
+	jr c, .NextMenuAccountSprite
+	inc hl
+	ld a, [hld]
+	cp 8 * TILE_WIDTH + 8
+	jr nc, .NextMenuAccountSprite
+	ld a, OAM_YCOORD_HIDDEN
+	ld [hl], a
+.NextMenuAccountSprite:
+	add hl, de
+	dec c
+	jr nz, .HideMenuAccountSprites
 	ret
 
 .GetMenuAccountTextPointer:
