@@ -398,6 +398,7 @@ Continue_LoadMenuHeader:
 	call _OffsetMenuHeader
 	call MenuBox
 	call PlaceVerticalMenuItems
+	call ClearChineseLineMode
 	ret
 
 .MenuHeader_Dex:
