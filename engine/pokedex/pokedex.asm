@@ -1102,6 +1102,10 @@ Pokedex_FillColumn:
 
 Pokedex_DrawMainScreenBG:
 ; Draws the left sidebar and the bottom bar on the main screen.
+	xor a
+	hlcoord 0, 0, wAttrmap
+	ld bc, SCREEN_AREA
+	call ByteFill
 	hlcoord 0, 17
 	ld de, String_START_SEARCH
 	call Pokedex_PlaceString
