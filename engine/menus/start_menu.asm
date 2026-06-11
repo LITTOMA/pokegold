@@ -99,6 +99,8 @@ StartMenu::
 	callfar InitChineseFontCache
 	call ._DrawMenuAccount
 	call SetUpMenu
+	ld hl, w2DMenuCursorInitY
+	inc [hl]
 	ld a, $ff
 	ld [wMenuSelection], a
 .loop

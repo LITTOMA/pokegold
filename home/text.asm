@@ -158,7 +158,15 @@ SetUpTextbox::
 	pop hl
 	ret
 
+ClearChineseLineMode::
+	xor a
+	ldh [hChineseLineActive], a
+	ret
+
 PlaceString::
+	call ClearChineseLineMode
+
+PlaceStringContinue::
 	push hl
 	; fallthrough
 
@@ -273,9 +281,34 @@ ENDM
 	call Diacritic
 
 .place
-	ld [hli], a
+	call PlaceMaybeChineseLineChar
 	call PrintLetterDelay
 	jp NextChar
+
+PlaceMaybeChineseLineChar::
+	call PlaceMaybeChineseLineCharNoAdvance
+	inc hl
+	ret
+
+PlaceMaybeChineseLineCharNoAdvance::
+	push bc
+	ld b, a
+	ldh a, [hChineseLineActive]
+	and a
+	ld a, b
+	jr z, .place
+	push hl
+	ld bc, SCREEN_WIDTH
+	add hl, bc
+	ld [hl], a
+	pop hl
+	pop bc
+	ret
+
+.place
+	ld [hl], a
+	pop bc
+	ret
 
 MACRO print_name
 	push de
@@ -321,7 +354,7 @@ PlaceBattlersName:
 
 .enemy
 	ld de, EnemyText
-	call PlaceString
+	call PlaceStringContinue
 	ld h, b
 	ld l, c
 	ld de, wEnemyMonNickname
@@ -341,11 +374,11 @@ PlaceEnemysName::
 	jr z, .rival
 
 	ld de, wOTClassName
-	call PlaceString
+	call PlaceStringContinue
 	ld h, b
 	ld l, c
 	ld de, String_Space
-	call PlaceString
+	call PlaceStringContinue
 	push bc
 	callfar Battle_GetTrainerName
 	pop hl
@@ -361,13 +394,14 @@ PlaceEnemysName::
 	jr PlaceCommandCharacter
 
 PlaceCommandCharacter::
-	call PlaceString
+	call PlaceStringContinue
 	ld h, b
 	ld l, c
 	pop de
 	jp NextChar
 
 NextLineChar::
+	call ClearChineseLineMode
 	pop hl
 	ld bc, SCREEN_WIDTH * 2
 	add hl, bc
@@ -375,6 +409,7 @@ NextLineChar::
 	jp NextChar
 
 LineFeedChar::
+	call ClearChineseLineMode
 	pop hl
 	ld bc, SCREEN_WIDTH
 	add hl, bc
@@ -382,12 +417,14 @@ LineFeedChar::
 	jp NextChar
 
 LineChar::
+	call ClearChineseLineMode
 	pop hl
 	hlcoord TEXTBOX_INNERX, TEXTBOX_INNERY + 2
 	push hl
 	jp NextChar
 
 Paragraph::
+	call ClearChineseLineMode
 	push de
 
 	ld a, [wLinkMode]
@@ -427,6 +464,7 @@ _ContText::
 	; fallthrough
 
 _ContTextNoPause::
+	call ClearChineseLineMode
 	push de
 	call TextScroll
 	call TextScroll
@@ -439,7 +477,7 @@ ContText::
 	ld de, .cont
 	ld b, h
 	ld c, l
-	call PlaceString
+	call PlaceStringContinue
 	ld h, b
 	ld l, c
 	pop de
@@ -478,23 +516,10 @@ DoneText::
 	text_end
 
 NullChar:: ; unused
-	ld b, h
-	ld c, l
-	pop hl
-	; A "<NULL>" character in a printed string
-	; displays an error message with the current value
-	; of hObjectStructIndex in decimal format.
-	; This is a debugging leftover.
-	ld de, .ErrorText
-	dec de
-	ret
-
-.ErrorText
-	text_decimal hObjectStructIndex, 1, 2
-	text "エラー"
-	done
+	jp NextChar
 
 TextScroll::
+	call ClearChineseLineMode
 	hlcoord TEXTBOX_X, TEXTBOX_INNERY
 	decoord TEXTBOX_X, TEXTBOX_INNERY - 1
 	ld bc, 3 * SCREEN_WIDTH
@@ -555,14 +580,8 @@ PlaceFarString::
 	rst Bankswitch
 	ret
 
-PokeFluteTerminator:: ; unreferenced
-	ld hl, .stop
-	ret
-
-.stop:
-	text_end
-
 PrintTextboxTextAt::
+	call ClearChineseLineMode
 	ld a, [wTextboxFlags]
 	push af
 	set TEXT_DELAY_F, a
@@ -633,7 +652,7 @@ TextCommand_START::
 	ld e, l
 	ld h, b
 	ld l, c
-	call PlaceString
+	call PlaceStringContinue
 	ld h, d
 	ld l, e
 	inc hl
@@ -648,7 +667,7 @@ TextCommand_RAM::
 	push hl
 	ld h, b
 	ld l, c
-	call PlaceString
+	call PlaceStringContinue
 	pop hl
 	ret
 
@@ -696,6 +715,7 @@ TextCommand_BCD::
 
 TextCommand_MOVE::
 ; move to a new tile
+	call ClearChineseLineMode
 	ld a, [hli]
 	ld [wMenuScrollPosition + 2], a
 	ld c, a
@@ -723,6 +743,7 @@ TextCommand_BOX::
 
 TextCommand_LOW::
 ; write text at (1,16)
+	call ClearChineseLineMode
 	bccoord TEXTBOX_INNERX, TEXTBOX_INNERY + 2
 	ret
 
@@ -744,6 +765,7 @@ TextCommand_PROMPT_BUTTON::
 TextCommand_SCROLL::
 ; pushes text up two lines and sets the BC cursor to the border tile
 ; below the first character column of the text box.
+	call ClearChineseLineMode
 	push hl
 	call UnloadBlinkingCursor
 	call TextScroll
@@ -827,18 +849,6 @@ TextCommand_SOUND::
 	pop bc
 	ret
 
-TextCommand_CRY:: ; unreferenced
-; play a pokemon cry
-	push de
-	ld e, [hl]
-	inc hl
-	ld d, [hl]
-	call PlayMonCry
-	pop de
-	pop hl
-	pop bc
-	ret
-
 TextSFX::
 	dbw TX_SOUND_DEX_FANFARE_50_79,  SFX_DEX_FANFARE_50_79
 	dbw TX_SOUND_FANFARE,            SFX_FANFARE
@@ -860,7 +870,7 @@ TextCommand_DOTS::
 .loop
 	push de
 	ld a, '…'
-	ld [hli], a
+	call PlaceMaybeChineseLineChar
 	call GetJoypad
 	ldh a, [hJoyDown]
 	and PAD_A | PAD_B
@@ -908,7 +918,7 @@ TextCommand_STRINGBUFFER::
 	ld e, l
 	ld h, b
 	ld l, c
-	call PlaceString
+	call PlaceStringContinue
 	pop hl
 	ret
 
@@ -928,11 +938,11 @@ TextCommand_DAY::
 	ld d, h
 	ld e, l
 	pop hl
-	call PlaceString
+	call PlaceStringContinue
 	ld h, b
 	ld l, c
 	ld de, .Day
-	call PlaceString
+	call PlaceStringContinue
 	pop hl
 	ret
 

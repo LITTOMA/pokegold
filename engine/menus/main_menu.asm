@@ -211,7 +211,8 @@ MainMenu_PrintCurrentTimeAndDay:
 	ldh a, [hHours]
 	ld c, a
 	farcall PrintHour
-	ld [hl], ':'
+	ld a, ':'
+	call PlaceMaybeChineseLineCharNoAdvance
 	inc hl
 	ld de, hMinutes
 	lb bc, PRINTNUM_LEADINGZEROS | 1, 2

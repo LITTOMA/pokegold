@@ -174,6 +174,7 @@ hChineseGlyphIndex:: dw
 hChineseGlyphTile:: db
 hChineseFontCacheInitialized:: db
 hChineseFontCacheNext:: db
+hChineseLineActive:: db
 hRequested1bppVBK:: db
 
 ENDSECTION

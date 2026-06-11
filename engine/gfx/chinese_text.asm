@@ -53,6 +53,8 @@ GetChineseFontTile::
 	add a
 	add CHINESE_FONT_TILE_START
 	ldh [hChineseGlyphTile], a
+	ld a, 1
+	ldh [hChineseLineActive], a
 	ret
 
 LoadChineseGlyph:

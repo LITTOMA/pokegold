@@ -20,7 +20,7 @@ PrintNum::
 
 .moneyflag ; 101xxxxx or 011xxxxx
 	ld a, '¥'
-	ld [hli], a
+	call PlaceMaybeChineseLineChar
 	res PRINTNUM_MONEY_F, b ; 100xxxxx or 010xxxxx
 
 .main
@@ -159,21 +159,22 @@ PrintNum::
 	push af
 	ld a, '0'
 	add c
-	ld [hl], a
+	call PlaceMaybeChineseLineCharNoAdvance
 	pop af
 	ldh [hPrintNumBuffer + 0], a
 	inc e
 	dec e
 	jr nz, .money_leading_zero
 	inc hl
-	ld [hl], '.'
+	ld a, '.'
+	call PlaceMaybeChineseLineCharNoAdvance
 
 .money_leading_zero
 	call .AdvancePointer
 	call .PrintYen
 	ld a, '0'
 	add b
-	ld [hli], a
+	call PlaceMaybeChineseLineChar
 
 	pop de
 	pop bc
@@ -187,7 +188,7 @@ PrintNum::
 	bit PRINTNUM_MONEY_F, d
 	jr z, .stop
 	ld a, '¥'
-	ld [hli], a
+	call PlaceMaybeChineseLineChar
 	res PRINTNUM_MONEY_F, d
 
 .stop
@@ -265,25 +266,27 @@ PrintNum::
 	bit PRINTNUM_MONEY_F, d
 	jr z, .done
 	ld a, '¥'
-	ld [hli], a
+	call PlaceMaybeChineseLineChar
 	res PRINTNUM_MONEY_F, d
 .done
 	ld a, '0'
 	add c
-	ld [hl], a
+	call PlaceMaybeChineseLineCharNoAdvance
 	ldh [hPrintNumBuffer + 0], a
 	inc e
 	dec e
 	ret nz
 	inc hl
-	ld [hl], '.'
+	ld a, '.'
+	call PlaceMaybeChineseLineCharNoAdvance
 	ret
 
 .PrintLeadingZero:
 ; prints a leading zero unless they are turned off in the flags
 	bit PRINTNUM_LEADINGZEROS_F, d
 	ret z
-	ld [hl], '0'
+	ld a, '0'
+	call PlaceMaybeChineseLineCharNoAdvance
 	ret
 
 .AdvancePointer:
@@ -315,11 +318,11 @@ PrintHexNumber::
 	swap a
 	and $f
 	call .PrintDigit
-	ld [hli], a
+	call PlaceMaybeChineseLineChar
 	ld a, [de]
 	and $f
 	call .PrintDigit
-	ld [hli], a
+	call PlaceMaybeChineseLineChar
 	inc de
 	ret
 

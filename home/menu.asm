@@ -288,9 +288,6 @@ MenuTextbox::
 	pop hl
 	jp PrintText
 
-Menu_DummyFunction:: ; unreferenced
-	ret
-
 LoadMenuTextbox::
 	ld hl, .MenuHeader
 	call LoadMenuHeader
@@ -377,10 +374,6 @@ YesNoBox::
 
 PlaceYesNoBox::
 	jr _YesNoBox
-
-PlaceGenericTwoOptionBox:: ; unreferenced
-	call LoadMenuHeader
-	jr InterpretTwoOptionMenu
 
 _YesNoBox::
 ; Return nc (yes) or c (no).

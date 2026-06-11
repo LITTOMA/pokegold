@@ -467,10 +467,12 @@ Options_Frame:
 	maskbits NUM_FRAMES
 	ld [hl], a
 UpdateFrame:
+	ld a, 1
+	ldh [hChineseLineActive], a
 	ld a, [wTextboxFrame]
 	hlcoord 13, 13 ; where on the screen the number is drawn
 	add '1'
-	ld [hl], a
+	call PlaceMaybeChineseLineCharNoAdvance
 	call LoadFontsExtra
 	and a
 	ret
@@ -551,7 +553,7 @@ Options_UpdateCursorPosition:
 	add hl, de
 	dec c
 	jr nz, .clear_attrs
-	hlcoord 1, 1
+	hlcoord 1, 2
 	ld bc, 2 * SCREEN_WIDTH
 	ld a, [wJumptableIndex]
 	call AddNTimes

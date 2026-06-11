@@ -400,7 +400,7 @@ def render_bdf_glyph(font: BdfFont, char: str) -> Image.Image:
     em_image.paste(glyph_image, (x, y))
 
     image = Image.new("L", (GLYPH_SIZE, GLYPH_SIZE), 255)
-    image.paste(em_image, ((GLYPH_SIZE - font.width) // 2, (GLYPH_SIZE - font.height) // 2))
+    image.paste(em_image, ((GLYPH_SIZE - font.width) // 2, GLYPH_SIZE - font.height))
     return image
 
 

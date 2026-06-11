@@ -1,29 +1,3 @@
-FarDecompressBufferedPic:: ; unreferenced
-	ld b, a
-	ldh a, [hROMBank]
-	push af
-	ld a, b
-	rst Bankswitch
-
-	ld a, BANK(sDecompressBuffer)
-	call OpenSRAM
-	ld hl, sDecompressBuffer
-	ld bc, 7 * 7 tiles
-	xor a
-	call ByteFill
-
-	ld hl, wFarDecompressPicPointer
-	ld a, [hli]
-	ld h, [hl]
-	ld l, a
-	ld de, sDecompressBuffer
-	call Decompress
-
-	call CloseSRAM
-	pop af
-	rst Bankswitch
-	ret
-
 UpdatePlayerSprite::
 	farcall _UpdatePlayerSprite
 	ret
