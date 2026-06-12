@@ -176,6 +176,7 @@ hChineseFontCacheInitialized:: db
 hChineseFontCacheNext:: db
 hChineseLineActive:: db
 hChineseFontInvert:: db
+hChineseFontTownMap:: db
 hRequested1bppVBK:: db
 hRequested1bppInvert:: db
 

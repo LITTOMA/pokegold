@@ -325,6 +325,9 @@ InitPokegearTilemap:
 	db "SWITCH▶@"
 
 .Map:
+; Clock/phone text can use the low Chinese glyph cache, which overlaps
+; town map graphics in vTiles2. Reload the map tiles before drawing maps.
+	call LoadTownMapGFX
 	ld a, [wPokegearMapPlayerIconLandmark]
 	cp LANDMARK_FAST_SHIP
 	jr z, .johto
@@ -696,14 +699,6 @@ PokegearMap_UpdateLandmarkName:
 	hlcoord 8, 0
 	lb bc, 2, 12
 	call ClearBox
-	ldh a, [hCGB]
-	and a
-	jr z, .draw_name
-	hlcoord 9, 0, wAttrmap
-	lb bc, 2, 11
-	ld a, PAL_BG_TEXT | BG_ATTR_VRAM_BANK_1
-	call .FillLandmarkNameAttrBox
-.draw_name
 	pop af
 	ld e, a
 	push de
@@ -712,6 +707,22 @@ PokegearMap_UpdateLandmarkName:
 	farcall TownMap_ConvertLineBreakCharacters
 	hlcoord 8, 0
 	ld [hl], $34
+	ldh a, [hCGB]
+	and a
+	ret z
+	call .SetLandmarkNameAttrs
+	call CGBOnly_CopyTilemapAtOnce
+	ret
+
+.SetLandmarkNameAttrs:
+	hlcoord 8, 0, wAttrmap
+	lb bc, 2, 12
+	xor a
+	call .FillLandmarkNameAttrBox
+	hlcoord 9, 0, wAttrmap
+	lb bc, 2, 11
+	ld a, BG_ATTR_VRAM_BANK_1
+	call .FillLandmarkNameAttrBox
 	ret
 
 .FillLandmarkNameAttrBox:

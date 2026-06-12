@@ -32,6 +32,7 @@ MANIFEST = ROOT / "gfx" / "font" / "chinese_chars.tsv"
 ASM_SUFFIX = ".asm"
 GLYPH_SIZE = 16
 TILE_SIZE = 8
+TOWN_MAP_GLYPH_Y_SHIFT = -2
 MAX_CHINESE_CHARS = 2048
 CHINESE_FONT_BANK_CHARS = 512
 CHINESE_FONT_BANK_COUNT = MAX_CHINESE_CHARS // CHINESE_FONT_BANK_CHARS
@@ -428,6 +429,18 @@ def glyph_to_1bpp_tiles(image: Image.Image) -> bytes:
     return bytes(data)
 
 
+def shift_glyph_y(image: Image.Image, dy: int) -> Image.Image:
+    if dy == 0:
+        return image
+    shifted = Image.new("L", image.size, 255)
+    src_y = max(0, -dy)
+    dst_y = max(0, dy)
+    height = image.height - abs(dy)
+    if height > 0:
+        shifted.paste(image.crop((0, src_y, image.width, src_y + height)), (0, dst_y))
+    return shifted
+
+
 def blank_glyph_bytes() -> bytes:
     return bytes(TILE_SIZE * 4)
 
@@ -435,21 +448,29 @@ def blank_glyph_bytes() -> bytes:
 def write_font(font_path: Path, chars: list[str]) -> bool:
     font = load_bdf_font(font_path)
     font_banks = [bytearray() for _ in range(CHINESE_FONT_BANK_COUNT)]
+    town_map_font_banks = [bytearray() for _ in range(CHINESE_FONT_BANK_COUNT)]
     preview = Image.new("L", (max(1, len(chars)) * GLYPH_SIZE, GLYPH_SIZE), 255)
 
     for index, char in enumerate(chars):
         glyph = render_bdf_glyph(font, char)
         bank = index // CHINESE_FONT_BANK_CHARS
         font_banks[bank].extend(glyph_to_1bpp_tiles(glyph))
+        town_map_glyph = shift_glyph_y(glyph, TOWN_MAP_GLYPH_Y_SHIFT)
+        town_map_font_banks[bank].extend(glyph_to_1bpp_tiles(town_map_glyph))
         preview.paste(glyph, (index * GLYPH_SIZE, 0))
 
     for bank_data in font_banks:
+        if not bank_data:
+            bank_data.extend(blank_glyph_bytes())
+    for bank_data in town_map_font_banks:
         if not bank_data:
             bank_data.extend(blank_glyph_bytes())
 
     changed = False
     for bank, bank_data in enumerate(font_banks):
         changed |= write_bytes_if_changed(ROOT / "gfx" / "font" / f"chinese_{bank}.1bpp", bytes(bank_data))
+    for bank, bank_data in enumerate(town_map_font_banks):
+        changed |= write_bytes_if_changed(ROOT / "gfx" / "font" / f"chinese_town_map_{bank}.1bpp", bytes(bank_data))
     preview_path = ROOT / "gfx" / "font" / "chinese_preview.png"
     old_preview = preview_path.read_bytes() if preview_path.exists() else None
     preview_path.parent.mkdir(parents=True, exist_ok=True)

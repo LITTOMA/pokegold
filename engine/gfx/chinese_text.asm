@@ -48,7 +48,10 @@ GetChineseFontTile::
 	call LoadChineseGlyph
 	pop bc
 .hit
+	ldh a, [hChineseFontTownMap]
+	and a
 	ld a, c
+	jr nz, .town_map_tile_id
 	cp CHINESE_FONT_CACHE_LOW_CHARS
 	jr c, .low_tile_id
 	sub CHINESE_FONT_CACHE_LOW_CHARS
@@ -60,6 +63,11 @@ GetChineseFontTile::
 	add a
 	add a
 	add CHINESE_FONT_TILE_START
+	jr .store_tile_id
+.town_map_tile_id
+	add a
+	add a
+	add CHINESE_FONT_TILE_HIGH_START
 .store_tile_id
 	ldh [hChineseGlyphTile], a
 	ld a, 1
@@ -82,6 +90,14 @@ LoadChineseGlyph:
 	ld a, b
 	srl a
 	and $3
+	push af
+	ldh a, [hChineseFontTownMap]
+	and a
+	jr z, .use_normal_font
+	pop af
+	jr .town_map_font
+.use_normal_font
+	pop af
 	jr z, .font0
 	dec a
 	jr z, .font1
@@ -109,11 +125,43 @@ LoadChineseGlyph:
 	ld a, BANK(ChineseFont2) | $80
 	ldh [hRequested1bppVBK], a
 	and $7f
+	jr .got_font
+.town_map_font
+	jr z, .town_map_font0
+	dec a
+	jr z, .town_map_font1
+	dec a
+	jr z, .town_map_font2
+	ld de, ChineseTownMapFont3
+	ld a, BANK(ChineseTownMapFont3) | $80
+	ldh [hRequested1bppVBK], a
+	and $7f
+	jr .got_font
+.town_map_font0
+	ld de, ChineseTownMapFont0
+	ld a, BANK(ChineseTownMapFont0) | $80
+	ldh [hRequested1bppVBK], a
+	and $7f
+	jr .got_font
+.town_map_font1
+	ld de, ChineseTownMapFont1
+	ld a, BANK(ChineseTownMapFont1) | $80
+	ldh [hRequested1bppVBK], a
+	and $7f
+	jr .got_font
+.town_map_font2
+	ld de, ChineseTownMapFont2
+	ld a, BANK(ChineseTownMapFont2) | $80
+	ldh [hRequested1bppVBK], a
+	and $7f
 .got_font
 	ld b, a
 	add hl, de
 	push hl
+	ldh a, [hChineseFontTownMap]
+	and a
 	ld a, c
+	jr nz, .town_map_cache_slot
 	cp CHINESE_FONT_CACHE_LOW_CHARS
 	jr c, .low_cache_slot
 	sub CHINESE_FONT_CACHE_LOW_CHARS
@@ -122,6 +170,9 @@ LoadChineseGlyph:
 	jr .got_dest_base
 .low_cache_slot
 	ld de, vTiles2 tile CHINESE_FONT_TILE_START
+	jr .got_dest_base
+.town_map_cache_slot
+	ld de, vTiles1
 .got_dest_base
 	ld h, 0
 	ld l, c
