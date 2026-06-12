@@ -68,7 +68,7 @@ TrainerCard:
 	ld b, SCGB_TRAINER_CARD
 	call GetSGBLayout
 	call SetDefaultBGPAndOBP
-	call TrainerCard_SetTopChineseAttrs
+	call TrainerCard_SetTopAttrs
 	call CGBOnly_CopyTilemapAtOnce
 	call WaitBGMap
 	ld hl, wJumptableIndex
@@ -87,6 +87,35 @@ TrainerCard_InitChineseFontCache:
 	ldh [hChineseFontCacheNext], a
 	ret
 
+TrainerCard_SetTopAttrs:
+	call TrainerCard_SetTopTextAttrs
+	jp TrainerCard_SetTopChineseAttrs
+
+TrainerCard_SetPage1Attrs:
+	call TrainerCard_SetTopAttrs
+	call TrainerCard_SetPage1TextAttrs
+	jp TrainerCard_SetPage1ChineseAttrs
+
+TrainerCard_SetTopTextAttrs:
+	hlcoord 6, 1, wAttrmap
+	lb bc, 1, 1
+	call TrainerCard_SetTextAttrBox
+	hlcoord 7, 2, wAttrmap
+	lb bc, 1, 7
+	call TrainerCard_SetTextAttrBox
+	hlcoord 1, 3, wAttrmap
+	lb bc, 1, 13
+	call TrainerCard_SetTextAttrBox
+	hlcoord 2, 4, wAttrmap
+	lb bc, 1, 8
+	call TrainerCard_SetTextAttrBox
+	hlcoord 7, 6, wAttrmap
+	lb bc, 1, 7
+	call TrainerCard_SetTextAttrBox
+	hlcoord 2, 8, wAttrmap
+	lb bc, 1, 5
+	jp TrainerCard_SetTextAttrBox
+
 TrainerCard_SetTopChineseAttrs:
 	hlcoord 2, 1, wAttrmap
 	lb bc, 2, 4
@@ -95,8 +124,18 @@ TrainerCard_SetTopChineseAttrs:
 	lb bc, 2, 4
 	jp TrainerCard_SetChineseAttrBox
 
+TrainerCard_SetPage1TextAttrs:
+	hlcoord 15, 10, wAttrmap
+	lb bc, 1, 3
+	call TrainerCard_SetTextAttrBox
+	hlcoord 11, 13, wAttrmap
+	lb bc, 1, 7
+	call TrainerCard_SetTextAttrBox
+	hlcoord 16, 15, wAttrmap
+	lb bc, 1, 1
+	jp TrainerCard_SetTextAttrBox
+
 TrainerCard_SetPage1ChineseAttrs:
-	call TrainerCard_SetTopChineseAttrs
 	hlcoord 2, 10, wAttrmap
 	lb bc, 2, 4
 	call TrainerCard_SetChineseAttrBox
@@ -107,14 +146,19 @@ TrainerCard_SetPage1ChineseAttrs:
 	lb bc, 2, 4
 	jp TrainerCard_SetChineseAttrBox
 
+TrainerCard_SetTextAttrBox:
+	ld a, PAL_BG_TEXT
+	jr TrainerCard_FillAttrBox
+
 TrainerCard_SetChineseAttrBox:
+	ld a, PAL_BG_TEXT | BG_ATTR_VRAM_BANK_1
+
+TrainerCard_FillAttrBox:
 	ld de, SCREEN_WIDTH
 .row
 	push hl
 	push bc
 .col
-	ld a, [hl]
-	or BG_ATTR_VRAM_BANK_1
 	ld [hli], a
 	dec c
 	jr nz, .col
@@ -159,7 +203,7 @@ TrainerCard_Page1_LoadGFX:
 	lb bc, BANK(CardStatusGFX), 86
 	call Request2bpp
 	call TrainerCard_Page1_PrintDexCaught_GameTime
-	call TrainerCard_SetPage1ChineseAttrs
+	call TrainerCard_SetPage1Attrs
 	call CGBOnly_CopyTilemapAtOnce
 	call TrainerCard_IncrementJumptable
 	ret
@@ -203,7 +247,7 @@ TrainerCard_Page2_LoadGFX:
 	ld b, SCGB_TRAINER_CARD
 	call GetSGBLayout
 	call SetDefaultBGPAndOBP
-	call TrainerCard_SetTopChineseAttrs
+	call TrainerCard_SetTopAttrs
 	call CGBOnly_CopyTilemapAtOnce
 	call TrainerCard_IncrementJumptable
 	ret
@@ -256,7 +300,7 @@ TrainerCard_Page3_LoadGFX:
 	ld b, SCGB_TRAINER_CARD
 	call GetSGBLayout
 	call SetDefaultBGPAndOBP
-	call TrainerCard_SetTopChineseAttrs
+	call TrainerCard_SetTopAttrs
 	call CGBOnly_CopyTilemapAtOnce
 	call TrainerCard_IncrementJumptable
 	ret
