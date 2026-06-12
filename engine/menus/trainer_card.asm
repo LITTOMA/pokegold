@@ -9,6 +9,7 @@
 	const TRAINERCARDSTATE_QUIT          ; 6
 
 DEF TRAINER_CARD_TEXT_ATTR EQU $0
+DEF TRAINER_CARD_BADGE_FACE_ATTR EQU $7
 
 TrainerCard:
 	ld a, [wStateFlags]
@@ -108,35 +109,35 @@ TrainerCard_SetBadgePageAttrs:
 	call TrainerCard_SetTextAttrBox
 	hlcoord 2, 11, wAttrmap
 	lb bc, 2, 4
-	ld a, $1 ; falkner
+	ld a, TRAINER_CARD_BADGE_FACE_ATTR
 	call TrainerCard_FillAttrBox
 	hlcoord 6, 11, wAttrmap
 	lb bc, 2, 4
-	ld a, $2 ; bugsy
+	ld a, TRAINER_CARD_BADGE_FACE_ATTR
 	call TrainerCard_FillAttrBox
 	hlcoord 10, 11, wAttrmap
 	lb bc, 2, 4
-	ld a, $3 ; whitney
+	ld a, TRAINER_CARD_BADGE_FACE_ATTR
 	call TrainerCard_FillAttrBox
 	hlcoord 14, 11, wAttrmap
 	lb bc, 2, 4
-	ld a, $4 ; morty
+	ld a, TRAINER_CARD_BADGE_FACE_ATTR
 	call TrainerCard_FillAttrBox
 	hlcoord 2, 14, wAttrmap
 	lb bc, 2, 4
-	ld a, $5 ; chuck
+	ld a, TRAINER_CARD_BADGE_FACE_ATTR
 	call TrainerCard_FillAttrBox
 	hlcoord 6, 14, wAttrmap
 	lb bc, 2, 4
-	ld a, $6 ; jasmine
+	ld a, TRAINER_CARD_BADGE_FACE_ATTR
 	call TrainerCard_FillAttrBox
 	hlcoord 10, 14, wAttrmap
 	lb bc, 2, 4
-	ld a, $7 ; pryce
+	ld a, TRAINER_CARD_BADGE_FACE_ATTR
 	call TrainerCard_FillAttrBox
 	hlcoord 14, 14, wAttrmap
 	lb bc, 2, 4
-	ld a, $1 ; clair
+	ld a, TRAINER_CARD_BADGE_FACE_ATTR
 	jp TrainerCard_FillAttrBox
 
 TrainerCard_SetTopTextAttrs:
