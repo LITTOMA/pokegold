@@ -100,6 +100,10 @@ TrainerCard_SetPage1Attrs:
 
 TrainerCard_SetBadgePageAttrs:
 	call TrainerCard_SetTopAttrs
+	hlcoord 0, 8, wAttrmap
+	lb bc, 9, SCREEN_WIDTH
+	ld a, $1
+	call TrainerCard_FillAttrBox
 	hlcoord 2, 11, wAttrmap
 	lb bc, 2, 4
 	ld a, $1 ; falkner
@@ -287,9 +291,6 @@ TrainerCard_Page2_LoadGFX:
 	lb bc, BANK(BadgeGFX), 44
 	call Request2bpp
 	call TrainerCard_Page2_3_InitObjectsAndStrings
-	ld b, SCGB_TRAINER_CARD
-	call GetSGBLayout
-	call SetDefaultBGPAndOBP
 	call TrainerCard_SetBadgePageAttrs
 	call CGBOnly_CopyTilemapAtOnce
 	call TrainerCard_IncrementJumptable
@@ -340,9 +341,6 @@ TrainerCard_Page3_LoadGFX:
 	lb bc, BANK(BadgeGFX2), 44
 	call Request2bpp
 	call TrainerCard_Page2_3_InitObjectsAndStrings
-	ld b, SCGB_TRAINER_CARD
-	call GetSGBLayout
-	call SetDefaultBGPAndOBP
 	call TrainerCard_SetBadgePageAttrs
 	call CGBOnly_CopyTilemapAtOnce
 	call TrainerCard_IncrementJumptable

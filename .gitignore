@@ -45,6 +45,7 @@ gfx/font/chinese_preview.png
 
 # local third-party tools and downloads
 tools/downloads/
+tools/bgb/
 tools/fusion-pixel-font-*/
 tools/pyboy/
 tools/rgbds-*/
