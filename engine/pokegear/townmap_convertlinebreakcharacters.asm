@@ -15,7 +15,11 @@ TownMap_ConvertLineBreakCharacters:
 	ld [hl], '<LF>'
 
 .end
+	farcall InitChineseFontCache
 	ld de, wStringBuffer1
 	hlcoord 9, 0
-	call PlaceString
+	ld a, 1
+	ldh [hChineseLineActive], a
+	call PlaceStringContinue
+	call ClearChineseLineMode
 	ret

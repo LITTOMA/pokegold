@@ -142,13 +142,17 @@ Pokegear_LoadGFX:
 	ld bc, 4 tiles
 	ld a, BANK(ChrisSpriteGFX)
 	call FarCopyBytes
-	ret
+	jr .done_gfx
 
 .ssaqua
 	ld hl, FastShipGFX
 	ld de, vTiles0 tile $10
 	ld bc, 8 tiles
 	call CopyBytes
+
+.done_gfx
+; Town map tiles and ClearVBank1 overwrite Chinese glyph cache VRAM.
+	call ResetChineseFontCache
 	ret
 
 FastShipGFX:
@@ -253,6 +257,12 @@ InitPokegearTilemap:
 .return_from_jumptable
 	call Pokegear_FinishTilemap
 	farcall TownMapPals
+	ld a, [wPokegearCard]
+	cp POKEGEARCARD_MAP
+	jr nz, .skip_landmark_name
+	ld a, [wPokegearMapCursorLandmark]
+	call PokegearMap_UpdateLandmarkName
+.skip_landmark_name
 	ld a, [wPokegearMapRegion]
 	and a
 	jr nz, .kanto_0
@@ -336,8 +346,6 @@ InitPokegearTilemap:
 	ld [hl], $06
 	hlcoord 19, 2
 	ld [hl], $17
-	ld a, [wPokegearMapCursorLandmark]
-	call PokegearMap_UpdateLandmarkName
 	ret
 
 .Radio:
@@ -688,6 +696,14 @@ PokegearMap_UpdateLandmarkName:
 	hlcoord 8, 0
 	lb bc, 2, 12
 	call ClearBox
+	ldh a, [hCGB]
+	and a
+	jr z, .draw_name
+	hlcoord 9, 0, wAttrmap
+	lb bc, 2, 11
+	ld a, PAL_BG_TEXT | BG_ATTR_VRAM_BANK_1
+	call .FillLandmarkNameAttrBox
+.draw_name
 	pop af
 	ld e, a
 	push de
@@ -696,6 +712,23 @@ PokegearMap_UpdateLandmarkName:
 	farcall TownMap_ConvertLineBreakCharacters
 	hlcoord 8, 0
 	ld [hl], $34
+	ret
+
+.FillLandmarkNameAttrBox:
+; Fill a b*c box at hl in wAttrmap with attribute a.
+	ld de, SCREEN_WIDTH
+.row
+	push bc
+	push hl
+.col
+	ld [hli], a
+	dec c
+	jr nz, .col
+	pop hl
+	add hl, de
+	pop bc
+	dec b
+	jr nz, .row
 	ret
 
 PokegearMap_UpdateCursorPosition:
@@ -1869,9 +1902,9 @@ _TownMap:
 	call ByteFill
 	hlcoord 19, 2
 	ld [hl], $17
+	farcall TownMapPals
 	ld a, [wTownMapCursorLandmark]
 	call PokegearMap_UpdateLandmarkName
-	farcall TownMapPals
 	ret
 
 PlayRadio:
@@ -2714,6 +2747,8 @@ LoadTownMapGFX:
 	ld de, vTiles2
 	lb bc, BANK(TownMapGFX), 48
 	call DecompressRequest2bpp
+; Reloading town map tiles clobbers the low Chinese glyph cache in vTiles2.
+	call ResetChineseFontCache
 	ret
 
 JohtoMap:

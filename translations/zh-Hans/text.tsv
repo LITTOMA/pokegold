@@ -741,32 +741,32 @@ data.items.pocket_names:10:0	menu	data/items/pocket_names.asm	10	0	db	ITEM POCKE
 data.items.pocket_names:11:0	menu	data/items/pocket_names.asm	11	0	db	KEY POCKET@	重要袋
 data.items.pocket_names:12:0	menu	data/items/pocket_names.asm	12	0	db	BALL POCKET@	精灵球袋
 data.items.pocket_names:13:0	menu	data/items/pocket_names.asm	13	0	db	TM POCKET@	招式机袋
-data.maps.landmarks:108:0	text	data/maps/landmarks.asm	108	0	db	NEW BARK<BSP>TOWN@	
-data.maps.landmarks:109:0	text	data/maps/landmarks.asm	109	0	db	CHERRYGROVE<BSP>CITY@	
-data.maps.landmarks:110:0	text	data/maps/landmarks.asm	110	0	db	VIOLET CITY@	
-data.maps.landmarks:111:0	text	data/maps/landmarks.asm	111	0	db	AZALEA TOWN@	
-data.maps.landmarks:112:0	text	data/maps/landmarks.asm	112	0	db	GOLDENROD<BSP>CITY@	
-data.maps.landmarks:113:0	text	data/maps/landmarks.asm	113	0	db	ECRUTEAK<BSP>CITY@	
-data.maps.landmarks:114:0	text	data/maps/landmarks.asm	114	0	db	OLIVINE<BSP>CITY@	
-data.maps.landmarks:115:0	text	data/maps/landmarks.asm	115	0	db	CIANWOOD<BSP>CITY@	
-data.maps.landmarks:116:0	text	data/maps/landmarks.asm	116	0	db	MAHOGANY<BSP>TOWN@	
-data.maps.landmarks:117:0	text	data/maps/landmarks.asm	117	0	db	BLACKTHORN<BSP>CITY@	
-data.maps.landmarks:118:0	text	data/maps/landmarks.asm	118	0	db	LAKE OF<BSP>RAGE@	
-data.maps.landmarks:119:0	text	data/maps/landmarks.asm	119	0	db	SILVER CAVE@	
-data.maps.landmarks:120:0	text	data/maps/landmarks.asm	120	0	db	SPROUT<BSP>TOWER@	
-data.maps.landmarks:121:0	text	data/maps/landmarks.asm	121	0	db	RUINS<BSP>OF ALPH@	
-data.maps.landmarks:122:0	text	data/maps/landmarks.asm	122	0	db	UNION CAVE@	
-data.maps.landmarks:123:0	text	data/maps/landmarks.asm	123	0	db	SLOWPOKE<BSP>WELL@	
-data.maps.landmarks:124:0	text	data/maps/landmarks.asm	124	0	db	RADIO TOWER@	
-data.maps.landmarks:125:0	text	data/maps/landmarks.asm	125	0	db	POWER PLANT@	
-data.maps.landmarks:126:0	text	data/maps/landmarks.asm	126	0	db	NATIONAL<BSP>PARK@	
-data.maps.landmarks:127:0	text	data/maps/landmarks.asm	127	0	db	TIN TOWER@	
-data.maps.landmarks:128:0	text	data/maps/landmarks.asm	128	0	db	LIGHTHOUSE@	
-data.maps.landmarks:129:0	text	data/maps/landmarks.asm	129	0	db	WHIRL<BSP>ISLANDS@	
-data.maps.landmarks:130:0	text	data/maps/landmarks.asm	130	0	db	MT.MORTAR@	
-data.maps.landmarks:131:0	text	data/maps/landmarks.asm	131	0	db	DRAGON'S<BSP>DEN@	
-data.maps.landmarks:132:0	text	data/maps/landmarks.asm	132	0	db	ICE PATH@	
-data.maps.landmarks:133:0	text	data/maps/landmarks.asm	133	0	db	N/A@	
+data.maps.landmarks:108:0	text	data/maps/landmarks.asm	108	0	db	NEW BARK<BSP>TOWN@	若叶镇
+data.maps.landmarks:109:0	text	data/maps/landmarks.asm	109	0	db	CHERRYGROVE<BSP>CITY@	吉花市
+data.maps.landmarks:110:0	text	data/maps/landmarks.asm	110	0	db	VIOLET CITY@	桔梗市
+data.maps.landmarks:111:0	text	data/maps/landmarks.asm	111	0	db	AZALEA TOWN@	桧皮镇
+data.maps.landmarks:112:0	text	data/maps/landmarks.asm	112	0	db	GOLDENROD<BSP>CITY@	满金市
+data.maps.landmarks:113:0	text	data/maps/landmarks.asm	113	0	db	ECRUTEAK<BSP>CITY@	缘朱市
+data.maps.landmarks:114:0	text	data/maps/landmarks.asm	114	0	db	OLIVINE<BSP>CITY@	浅葱市
+data.maps.landmarks:115:0	text	data/maps/landmarks.asm	115	0	db	CIANWOOD<BSP>CITY@	湛蓝市
+data.maps.landmarks:116:0	text	data/maps/landmarks.asm	116	0	db	MAHOGANY<BSP>TOWN@	卡吉镇
+data.maps.landmarks:117:0	text	data/maps/landmarks.asm	117	0	db	BLACKTHORN<BSP>CITY@	烟墨市
+data.maps.landmarks:118:0	text	data/maps/landmarks.asm	118	0	db	LAKE OF<BSP>RAGE@	愤怒之湖
+data.maps.landmarks:119:0	text	data/maps/landmarks.asm	119	0	db	SILVER CAVE@	白银窟
+data.maps.landmarks:120:0	text	data/maps/landmarks.asm	120	0	db	SPROUT<BSP>TOWER@	喇叭芽之塔
+data.maps.landmarks:121:0	text	data/maps/landmarks.asm	121	0	db	RUINS<BSP>OF ALPH@	阿露福遗迹
+data.maps.landmarks:122:0	text	data/maps/landmarks.asm	122	0	db	UNION CAVE@	连接洞窟
+data.maps.landmarks:123:0	text	data/maps/landmarks.asm	123	0	db	SLOWPOKE<BSP>WELL@	呆呆兽之井
+data.maps.landmarks:124:0	text	data/maps/landmarks.asm	124	0	db	RADIO TOWER@	广播塔
+data.maps.landmarks:125:0	text	data/maps/landmarks.asm	125	0	db	POWER PLANT@	发电厂
+data.maps.landmarks:126:0	text	data/maps/landmarks.asm	126	0	db	NATIONAL<BSP>PARK@	自然公园
+data.maps.landmarks:127:0	text	data/maps/landmarks.asm	127	0	db	TIN TOWER@	铃铛塔
+data.maps.landmarks:128:0	text	data/maps/landmarks.asm	128	0	db	LIGHTHOUSE@	灯塔
+data.maps.landmarks:129:0	text	data/maps/landmarks.asm	129	0	db	WHIRL<BSP>ISLANDS@	漩涡岛
+data.maps.landmarks:130:0	text	data/maps/landmarks.asm	130	0	db	MT.MORTAR@	擂钵山
+data.maps.landmarks:131:0	text	data/maps/landmarks.asm	131	0	db	DRAGON'S<BSP>DEN@	龙穴
+data.maps.landmarks:132:0	text	data/maps/landmarks.asm	132	0	db	ICE PATH@	冰之通道
+data.maps.landmarks:133:0	text	data/maps/landmarks.asm	133	0	db	N/A@	无
 data.maps.landmarks:134:0	text	data/maps/landmarks.asm	134	0	db	PALLET TOWN@	
 data.maps.landmarks:135:0	text	data/maps/landmarks.asm	135	0	db	VIRIDIAN<BSP>CITY@	
 data.maps.landmarks:136:0	text	data/maps/landmarks.asm	136	0	db	PEWTER CITY@	
