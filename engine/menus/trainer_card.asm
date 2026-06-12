@@ -27,7 +27,7 @@ TrainerCard:
 	ldh a, [hJoyLast]
 	and PAD_B
 	jr nz, .quit
-	call .RunJumptable
+	call TrainerCard_RunJumptable
 	call DelayFrame
 	jr .loop
 
@@ -56,6 +56,7 @@ TrainerCard:
 	ld a, BANK(CardStatusGFX)
 	call FarCopyBytes
 
+	call TrainerCard_InitChineseFontCache
 	call TrainerCard_PrintTopHalfOfCard
 
 	hlcoord 0, 8
@@ -63,10 +64,12 @@ TrainerCard:
 	call TrainerCard_InitBorder
 
 	call EnableLCD
-	call WaitBGMap
+	call CGBOnly_CopyTilemapAtOnce
 	ld b, SCGB_TRAINER_CARD
 	call GetSGBLayout
 	call SetDefaultBGPAndOBP
+	call TrainerCard_SetTopChineseAttrs
+	call CGBOnly_CopyTilemapAtOnce
 	call WaitBGMap
 	ld hl, wJumptableIndex
 	xor a ; TRAINERCARDSTATE_PAGE1_LOADGFX
@@ -76,7 +79,53 @@ TrainerCard:
 	ld [hl], a  ; wTrainerCardBadgeAttributes
 	ret
 
-.RunJumptable:
+TrainerCard_InitChineseFontCache:
+	xor a
+	ldh [hChineseFontTownMap], a
+	callfar InitChineseFontCache
+	ld a, CHINESE_FONT_CACHE_LOW_CHARS
+	ldh [hChineseFontCacheNext], a
+	ret
+
+TrainerCard_SetTopChineseAttrs:
+	hlcoord 2, 1, wAttrmap
+	lb bc, 2, 4
+	call TrainerCard_SetChineseAttrBox
+	hlcoord 2, 6, wAttrmap
+	lb bc, 2, 4
+	jp TrainerCard_SetChineseAttrBox
+
+TrainerCard_SetPage1ChineseAttrs:
+	call TrainerCard_SetTopChineseAttrs
+	hlcoord 2, 10, wAttrmap
+	lb bc, 2, 4
+	call TrainerCard_SetChineseAttrBox
+	hlcoord 2, 12, wAttrmap
+	lb bc, 2, 8
+	call TrainerCard_SetChineseAttrBox
+	hlcoord 12, 15, wAttrmap
+	lb bc, 2, 4
+	jp TrainerCard_SetChineseAttrBox
+
+TrainerCard_SetChineseAttrBox:
+	ld de, SCREEN_WIDTH
+.row
+	push hl
+	push bc
+.col
+	ld a, [hl]
+	or BG_ATTR_VRAM_BANK_1
+	ld [hli], a
+	dec c
+	jr nz, .col
+	pop bc
+	pop hl
+	add hl, de
+	dec b
+	jr nz, .row
+	ret
+
+TrainerCard_RunJumptable:
 	jumptable .Jumptable, wJumptableIndex
 
 .Jumptable:
@@ -110,6 +159,8 @@ TrainerCard_Page1_LoadGFX:
 	lb bc, BANK(CardStatusGFX), 86
 	call Request2bpp
 	call TrainerCard_Page1_PrintDexCaught_GameTime
+	call TrainerCard_SetPage1ChineseAttrs
+	call CGBOnly_CopyTilemapAtOnce
 	call TrainerCard_IncrementJumptable
 	ret
 
@@ -149,6 +200,11 @@ TrainerCard_Page2_LoadGFX:
 	lb bc, BANK(BadgeGFX), 44
 	call Request2bpp
 	call TrainerCard_Page2_3_InitObjectsAndStrings
+	ld b, SCGB_TRAINER_CARD
+	call GetSGBLayout
+	call SetDefaultBGPAndOBP
+	call TrainerCard_SetTopChineseAttrs
+	call CGBOnly_CopyTilemapAtOnce
 	call TrainerCard_IncrementJumptable
 	ret
 
@@ -197,6 +253,11 @@ TrainerCard_Page3_LoadGFX:
 	lb bc, BANK(BadgeGFX2), 44
 	call Request2bpp
 	call TrainerCard_Page2_3_InitObjectsAndStrings
+	ld b, SCGB_TRAINER_CARD
+	call GetSGBLayout
+	call SetDefaultBGPAndOBP
+	call TrainerCard_SetTopChineseAttrs
+	call CGBOnly_CopyTilemapAtOnce
 	call TrainerCard_IncrementJumptable
 	ret
 
@@ -226,8 +287,11 @@ TrainerCard_PrintTopHalfOfCard:
 	hlcoord 0, 0
 	ld d, 5
 	call TrainerCard_InitBorder
-	hlcoord 2, 2
-	ld de, .Name_Money
+	hlcoord 2, 1
+	ld de, .Name
+	call PlaceString
+	hlcoord 2, 6
+	ld de, .Money
 	call PlaceString
 	hlcoord 2, 4
 	ld de, .ID_No
@@ -266,10 +330,11 @@ TrainerCard_PrintTopHalfOfCard:
 	jr nz, .row
 	ret
 
-.Name_Money:
-	db   "NAME/"
-	next ""
-	next "MONEY@"
+.Name:
+	db "NAME/@"
+
+.Money:
+	db "MONEY@"
 
 .ID_No:
 	db $27, $28, -1 ; ID NO
@@ -464,7 +529,7 @@ TrainerCard_Page1_PrintGameTime:
 	ldh a, [hVBlankCounter]
 	and $1f
 	ret nz
-	hlcoord 15, 12
+	hlcoord 15, 13
 	ld a, [hl]
 	xor ' ' ^ $2e ; alternate between space and small colon ($2e) tiles
 	ld [hl], a
