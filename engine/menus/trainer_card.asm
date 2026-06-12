@@ -303,7 +303,7 @@ TrainerCard_PrintTopHalfOfCard:
 	ld de, wPlayerID
 	lb bc, PRINTNUM_LEADINGZEROS | 2, 5
 	call PrintNum
-	hlcoord 7, 6
+	hlcoord 7, 7
 	ld de, wMoney
 	lb bc, PRINTNUM_MONEY | 3, 6
 	call PrintNum
@@ -331,7 +331,8 @@ TrainerCard_PrintTopHalfOfCard:
 	ret
 
 .Name:
-	db "NAME/@"
+	db "NAME/"
+	db "@"
 
 .Money:
 	db "MONEY@"
@@ -364,7 +365,7 @@ TrainerCard_Page1_PrintDexCaught_GameTime:
 	bit STATUSFLAGS_POKEDEX_F, a
 	ret nz
 	hlcoord 1, 9
-	lb bc, 2, 17
+	lb bc, 3, 17
 	call ClearBox
 	ret
 
