@@ -258,11 +258,27 @@ InitPokegearTilemap:
 	call Pokegear_FinishTilemap
 	farcall TownMapPals
 	ld a, [wPokegearCard]
+	cp POKEGEARCARD_CLOCK
+	call z, Pokegear_PlaceClockTexts
+	ld a, [wPokegearCard]
 	cp POKEGEARCARD_MAP
 	jr nz, .skip_landmark_name
 	ld a, [wPokegearMapCursorLandmark]
 	call PokegearMap_UpdateLandmarkName
 .skip_landmark_name
+	ld a, [wPokegearCard]
+	cp POKEGEARCARD_MAP
+	jr z, .map_card
+	xor a ; LOW(vBGMap0)
+	ldh [hBGMapAddress], a
+	ld a, HIGH(vBGMap0)
+	ldh [hBGMapAddress + 1], a
+	call .UpdateBGMap
+	ld a, SCREEN_HEIGHT_PX
+	ldh [hWY], a
+	ret
+
+.map_card
 	ld a, [wPokegearMapRegion]
 	and a
 	jr nz, .kanto_0
@@ -312,17 +328,10 @@ InitPokegearTilemap:
 .Clock:
 	ld de, ClockTilemapRLE
 	call Pokegear_LoadTilemapRLE
-	hlcoord 13, 1
-	ld de, .switch
-	call PlaceString
 	hlcoord 0, 12
 	lb bc, 4, 18
 	call Textbox
-	call Pokegear_UpdateClock
 	ret
-
-.switch
-	db "SWITCH▶@"
 
 .Map:
 ; Clock/phone text can use the low Chinese glyph cache, which overlaps
@@ -502,6 +511,11 @@ PokegearClock_Joypad:
 	ret
 
 .UpdateClock:
+	ldh a, [hMinutes]
+	ld hl, wUnusedPokegearByte
+	cp [hl]
+	ret z
+	ld [hl], a
 	xor a
 	ldh [hBGMapMode], a
 	call Pokegear_UpdateClock
@@ -509,10 +523,22 @@ PokegearClock_Joypad:
 	ldh [hBGMapMode], a
 	ret
 
+Pokegear_PlaceClockTexts:
+	xor a
+	ldh [hChineseFontTownMap], a
+	call ResetChineseFontCache
+	hlcoord 13, 1
+	ld de, PokegearSwitchText
+	call PlaceString
+	jr Pokegear_UpdateClock
+
 Pokegear_UpdateClock:
 	hlcoord 3, 5
 	lb bc, 5, 14
 	call ClearBox
+	ldh a, [hMinutes]
+	ld [wUnusedPokegearByte], a
+	call ClearChineseLineMode
 	ldh a, [hHours]
 	ld b, a
 	ldh a, [hMinutes]
@@ -530,6 +556,9 @@ Pokegear_UpdateClock:
 .GearTodayText:
 	text_far _GearTodayText
 	text_end
+
+PokegearSwitchText:
+	db "SWITCH▶@"
 
 PokegearMap_CheckRegion:
 	ld a, [wPokegearMapPlayerIconLandmark]
