@@ -609,10 +609,6 @@ _CGB_TrainerCard:
 	ld a, PRYCE
 	call GetTrainerPalettePointer
 	call LoadPalette_White_Col1_Col2_Black
-	ld hl, .BadgeFacePalette
-	ld de, wBGPals1 palette 7
-	ld bc, 1 palettes
-	call CopyBytes
 	ld a, PREDEFPAL_CGB_BADGE
 	call GetPredefPal
 	call LoadHLPaletteIntoDE
@@ -663,12 +659,6 @@ _CGB_TrainerCard:
 	ld a, TRUE
 	ldh [hCGBPalUpdate], a
 	ret
-
-.BadgeFacePalette:
-	RGB 31, 31, 31
-	RGB 21, 21, 21
-	RGB 13, 13, 13
-	RGB 00, 00, 00
 
 _CGB_MoveList:
 	ld de, wBGPals1
