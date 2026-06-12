@@ -8,6 +8,8 @@
 	const TRAINERCARDSTATE_PAGE3_JOYPAD  ; 5
 	const TRAINERCARDSTATE_QUIT          ; 6
 
+DEF TRAINER_CARD_TEXT_ATTR EQU $1
+
 TrainerCard:
 	ld a, [wStateFlags]
 	push af
@@ -147,11 +149,11 @@ TrainerCard_SetPage1ChineseAttrs:
 	jp TrainerCard_SetChineseAttrBox
 
 TrainerCard_SetTextAttrBox:
-	ld a, PAL_BG_TEXT
+	ld a, TRAINER_CARD_TEXT_ATTR
 	jr TrainerCard_FillAttrBox
 
 TrainerCard_SetChineseAttrBox:
-	ld a, PAL_BG_TEXT | BG_ATTR_VRAM_BANK_1
+	ld a, TRAINER_CARD_TEXT_ATTR | BG_ATTR_VRAM_BANK_1
 
 TrainerCard_FillAttrBox:
 	ld de, SCREEN_WIDTH
