@@ -70,6 +70,7 @@ TrainerCard:
 	ld b, SCGB_TRAINER_CARD
 	call GetSGBLayout
 	call SetDefaultBGPAndOBP
+	call UpdatePalsIfCGB
 	call TrainerCard_SetTopAttrs
 	call CGBOnly_CopyTilemapAtOnce
 	call WaitBGMap
@@ -290,6 +291,7 @@ TrainerCard_Page2_LoadGFX:
 	ld b, SCGB_TRAINER_CARD
 	call GetSGBLayout
 	call SetDefaultBGPAndOBP
+	call UpdatePalsIfCGB
 	call TrainerCard_SetBadgePageAttrs
 	call CGBOnly_CopyTilemapAtOnce
 	call TrainerCard_IncrementJumptable
@@ -343,6 +345,7 @@ TrainerCard_Page3_LoadGFX:
 	ld b, SCGB_TRAINER_CARD
 	call GetSGBLayout
 	call SetDefaultBGPAndOBP
+	call UpdatePalsIfCGB
 	call TrainerCard_SetBadgePageAttrs
 	call CGBOnly_CopyTilemapAtOnce
 	call TrainerCard_IncrementJumptable
