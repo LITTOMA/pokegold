@@ -230,7 +230,20 @@ LoadChineseGlyph:
 	ldh a, [hChineseFontInvert]
 	ldh [hRequested1bppInvert], a
 	ld c, CHINESE_FONT_TILES_PER_CHAR
-	jp Request1bpp
+	ldh a, [rLCDC]
+	bit B_LCDC_ENABLE, a
+	jp nz, Request1bpp
+	ld a, e
+	ld [wRequested1bppSource], a
+	ld a, d
+	ld [wRequested1bppSource + 1], a
+	ld a, l
+	ld [wRequested1bppDest], a
+	ld a, h
+	ld [wRequested1bppDest + 1], a
+	ld a, c
+	ld [wRequested1bppSize], a
+	jp Serve1bppRequest
 
 InitChineseFontCache::
 	call ClearChineseFontCache

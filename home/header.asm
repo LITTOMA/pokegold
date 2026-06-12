@@ -94,7 +94,9 @@ ChineseChar:
 	add hl, bc
 	ld [hli], a
 	ld [hl], a
-	call CGBOnly_CopyTilemapAtOnce
+	ldh a, [rLCDC]
+	bit B_LCDC_ENABLE, a
+	call nz, CGBOnly_CopyTilemapAtOnce
 	pop hl
 	pop de
 	call PrintLetterDelay
