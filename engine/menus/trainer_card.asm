@@ -91,7 +91,7 @@ TrainerCard_SetTopChineseAttrs:
 	hlcoord 2, 1, wAttrmap
 	lb bc, 2, 4
 	call TrainerCard_SetChineseAttrBox
-	hlcoord 2, 6, wAttrmap
+	hlcoord 2, 5, wAttrmap
 	lb bc, 2, 4
 	jp TrainerCard_SetChineseAttrBox
 
@@ -290,7 +290,7 @@ TrainerCard_PrintTopHalfOfCard:
 	hlcoord 2, 1
 	ld de, .Name
 	call PlaceString
-	hlcoord 2, 6
+	hlcoord 2, 5
 	ld de, .Money
 	call PlaceString
 	hlcoord 2, 4
@@ -303,7 +303,7 @@ TrainerCard_PrintTopHalfOfCard:
 	ld de, wPlayerID
 	lb bc, PRINTNUM_LEADINGZEROS | 2, 5
 	call PrintNum
-	hlcoord 7, 7
+	hlcoord 7, 6
 	ld de, wMoney
 	lb bc, PRINTNUM_MONEY | 3, 6
 	call PrintNum
