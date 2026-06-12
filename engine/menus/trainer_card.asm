@@ -8,7 +8,7 @@
 	const TRAINERCARDSTATE_PAGE3_JOYPAD  ; 5
 	const TRAINERCARDSTATE_QUIT          ; 6
 
-DEF TRAINER_CARD_TEXT_ATTR EQU $1
+DEF TRAINER_CARD_TEXT_ATTR EQU $0
 
 TrainerCard:
 	ld a, [wStateFlags]
@@ -70,7 +70,6 @@ TrainerCard:
 	ld b, SCGB_TRAINER_CARD
 	call GetSGBLayout
 	call SetDefaultBGPAndOBP
-	call UpdatePalsIfCGB
 	call TrainerCard_SetTopAttrs
 	call CGBOnly_CopyTilemapAtOnce
 	call WaitBGMap
@@ -137,7 +136,7 @@ TrainerCard_SetBadgePageAttrs:
 	call TrainerCard_FillAttrBox
 	hlcoord 14, 14, wAttrmap
 	lb bc, 2, 4
-	ld a, TRAINER_CARD_TEXT_ATTR ; clair
+	ld a, $1 ; clair
 	jp TrainerCard_FillAttrBox
 
 TrainerCard_SetTopTextAttrs:
@@ -291,7 +290,6 @@ TrainerCard_Page2_LoadGFX:
 	ld b, SCGB_TRAINER_CARD
 	call GetSGBLayout
 	call SetDefaultBGPAndOBP
-	call UpdatePalsIfCGB
 	call TrainerCard_SetBadgePageAttrs
 	call CGBOnly_CopyTilemapAtOnce
 	call TrainerCard_IncrementJumptable
@@ -345,7 +343,6 @@ TrainerCard_Page3_LoadGFX:
 	ld b, SCGB_TRAINER_CARD
 	call GetSGBLayout
 	call SetDefaultBGPAndOBP
-	call UpdatePalsIfCGB
 	call TrainerCard_SetBadgePageAttrs
 	call CGBOnly_CopyTilemapAtOnce
 	call TrainerCard_IncrementJumptable
