@@ -466,6 +466,8 @@ PokegearClock_Init:
 	call InitPokegearTilemap
 	ld hl, PokegearPressButtonText
 	call PrintText
+	call Pokegear_SetClockPageAttrs
+	call CGBOnly_CopyTilemapAtOnce
 	ld hl, wJumptableIndex
 	inc [hl]
 	call ExitPokegearRadio_HandleMusic
@@ -519,8 +521,7 @@ PokegearClock_Joypad:
 	xor a
 	ldh [hBGMapMode], a
 	call Pokegear_UpdateClock
-	ld a, $1
-	ldh [hBGMapMode], a
+	call CGBOnly_CopyTilemapAtOnce
 	ret
 
 Pokegear_PlaceClockTexts:
@@ -545,10 +546,11 @@ Pokegear_UpdateClock:
 	ld c, a
 	decoord 6, 8
 	farcall PrintHoursMins
+	call Pokegear_LowerClockTimeDigits
 	ld hl, .GearTodayText
 	bccoord 6, 6
 	call PrintTextboxTextAt
-	call Pokegear_SetClockAttrs
+	call Pokegear_SetClockPageAttrs
 	ret
 
 	db "ごぜん@"
@@ -558,13 +560,36 @@ Pokegear_UpdateClock:
 	text_far _GearTodayText
 	text_end
 
-Pokegear_SetClockAttrs:
-	hlcoord 3, 5, wAttrmap
-	lb bc, 5, 14
+Pokegear_LowerClockTimeDigits:
+	hlcoord 6, 8
+	decoord 6, 9
+	ld c, 5
+.copy
+	ld a, [hli]
+	ld [de], a
+	inc de
+	dec c
+	jr nz, .copy
+	hlcoord 6, 8
+	ld a, ' '
+	ld c, 5
+.clear
+	ld [hli], a
+	dec c
+	jr nz, .clear
+	ret
+
+Pokegear_SetClockPageAttrs:
+	hlcoord 12, 0, wAttrmap
+	lb bc, 4, 8
 	xor a
 	call .FillBox
-	hlcoord 13, 1, wAttrmap
-	lb bc, 2, 5
+	hlcoord 2, 4, wAttrmap
+	lb bc, 6, 16
+	xor a
+	call .FillBox
+	hlcoord 0, 12, wAttrmap
+	lb bc, 6, SCREEN_WIDTH
 	xor a
 	call .FillBox
 	hlcoord 13, 1, wAttrmap
