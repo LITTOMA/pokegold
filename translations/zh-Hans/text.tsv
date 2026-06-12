@@ -752,96 +752,96 @@ data.maps.landmarks:115:0	text	data/maps/landmarks.asm	115	0	db	CIANWOOD<BSP>CIT
 data.maps.landmarks:116:0	text	data/maps/landmarks.asm	116	0	db	MAHOGANY<BSP>TOWN@	卡吉镇
 data.maps.landmarks:117:0	text	data/maps/landmarks.asm	117	0	db	BLACKTHORN<BSP>CITY@	烟墨市
 data.maps.landmarks:118:0	text	data/maps/landmarks.asm	118	0	db	LAKE OF<BSP>RAGE@	愤怒之湖
-data.maps.landmarks:119:0	text	data/maps/landmarks.asm	119	0	db	SILVER CAVE@	白银窟
+data.maps.landmarks:119:0	text	data/maps/landmarks.asm	119	0	db	SILVER CAVE@	白银山
 data.maps.landmarks:120:0	text	data/maps/landmarks.asm	120	0	db	SPROUT<BSP>TOWER@	喇叭芽之塔
 data.maps.landmarks:121:0	text	data/maps/landmarks.asm	121	0	db	RUINS<BSP>OF ALPH@	阿露福遗迹
 data.maps.landmarks:122:0	text	data/maps/landmarks.asm	122	0	db	UNION CAVE@	连接洞窟
 data.maps.landmarks:123:0	text	data/maps/landmarks.asm	123	0	db	SLOWPOKE<BSP>WELL@	呆呆兽之井
-data.maps.landmarks:124:0	text	data/maps/landmarks.asm	124	0	db	RADIO TOWER@	广播塔
+data.maps.landmarks:124:0	text	data/maps/landmarks.asm	124	0	db	RADIO TOWER@	满金电台
 data.maps.landmarks:125:0	text	data/maps/landmarks.asm	125	0	db	POWER PLANT@	发电厂
 data.maps.landmarks:126:0	text	data/maps/landmarks.asm	126	0	db	NATIONAL<BSP>PARK@	自然公园
 data.maps.landmarks:127:0	text	data/maps/landmarks.asm	127	0	db	TIN TOWER@	铃铛塔
-data.maps.landmarks:128:0	text	data/maps/landmarks.asm	128	0	db	LIGHTHOUSE@	灯塔
-data.maps.landmarks:129:0	text	data/maps/landmarks.asm	129	0	db	WHIRL<BSP>ISLANDS@	漩涡岛
+data.maps.landmarks:128:0	text	data/maps/landmarks.asm	128	0	db	LIGHTHOUSE@	浅葱灯塔
+data.maps.landmarks:129:0	text	data/maps/landmarks.asm	129	0	db	WHIRL<BSP>ISLANDS@	漩涡列岛
 data.maps.landmarks:130:0	text	data/maps/landmarks.asm	130	0	db	MT.MORTAR@	擂钵山
 data.maps.landmarks:131:0	text	data/maps/landmarks.asm	131	0	db	DRAGON'S<BSP>DEN@	龙穴
 data.maps.landmarks:132:0	text	data/maps/landmarks.asm	132	0	db	ICE PATH@	冰之通道
 data.maps.landmarks:133:0	text	data/maps/landmarks.asm	133	0	db	N/A@	无
-data.maps.landmarks:134:0	text	data/maps/landmarks.asm	134	0	db	PALLET TOWN@	
-data.maps.landmarks:135:0	text	data/maps/landmarks.asm	135	0	db	VIRIDIAN<BSP>CITY@	
-data.maps.landmarks:136:0	text	data/maps/landmarks.asm	136	0	db	PEWTER CITY@	
-data.maps.landmarks:137:0	text	data/maps/landmarks.asm	137	0	db	CERULEAN<BSP>CITY@	
-data.maps.landmarks:138:0	text	data/maps/landmarks.asm	138	0	db	LAVENDER<BSP>TOWN@	
-data.maps.landmarks:139:0	text	data/maps/landmarks.asm	139	0	db	VERMILION<BSP>CITY@	
-data.maps.landmarks:140:0	text	data/maps/landmarks.asm	140	0	db	CELADON<BSP>CITY@	
-data.maps.landmarks:141:0	text	data/maps/landmarks.asm	141	0	db	SAFFRON<BSP>CITY@	
-data.maps.landmarks:142:0	text	data/maps/landmarks.asm	142	0	db	FUCHSIA<BSP>CITY@	
-data.maps.landmarks:143:0	text	data/maps/landmarks.asm	143	0	db	CINNABAR<BSP>ISLAND@	
-data.maps.landmarks:144:0	text	data/maps/landmarks.asm	144	0	db	INDIGO<BSP>PLATEAU@	
-data.maps.landmarks:145:0	text	data/maps/landmarks.asm	145	0	db	VICTORY<BSP>ROAD@	
-data.maps.landmarks:146:0	text	data/maps/landmarks.asm	146	0	db	MT.MOON@	
-data.maps.landmarks:147:0	text	data/maps/landmarks.asm	147	0	db	ROCK TUNNEL@	
-data.maps.landmarks:148:0	text	data/maps/landmarks.asm	148	0	db	LAV<BSP>RADIO TOWER@	
-data.maps.landmarks:149:0	text	data/maps/landmarks.asm	149	0	db	SILPH CO.@	
-data.maps.landmarks:150:0	text	data/maps/landmarks.asm	150	0	db	SAFARI ZONE@	
-data.maps.landmarks:151:0	text	data/maps/landmarks.asm	151	0	db	SEAFOAM<BSP>ISLANDS@	
-data.maps.landmarks:152:0	text	data/maps/landmarks.asm	152	0	db	#MON<BSP>MANSION@	
-data.maps.landmarks:153:0	text	data/maps/landmarks.asm	153	0	db	CERULEAN<BSP>CAVE@	
-data.maps.landmarks:154:0	text	data/maps/landmarks.asm	154	0	db	ROUTE 1@	
-data.maps.landmarks:155:0	text	data/maps/landmarks.asm	155	0	db	ROUTE 2@	
-data.maps.landmarks:156:0	text	data/maps/landmarks.asm	156	0	db	ROUTE 3@	
-data.maps.landmarks:157:0	text	data/maps/landmarks.asm	157	0	db	ROUTE 4@	
-data.maps.landmarks:158:0	text	data/maps/landmarks.asm	158	0	db	ROUTE 5@	
-data.maps.landmarks:159:0	text	data/maps/landmarks.asm	159	0	db	ROUTE 6@	
-data.maps.landmarks:160:0	text	data/maps/landmarks.asm	160	0	db	ROUTE 7@	
-data.maps.landmarks:161:0	text	data/maps/landmarks.asm	161	0	db	ROUTE 8@	
-data.maps.landmarks:162:0	text	data/maps/landmarks.asm	162	0	db	ROUTE 9@	
-data.maps.landmarks:163:0	text	data/maps/landmarks.asm	163	0	db	ROUTE 10@	
-data.maps.landmarks:164:0	text	data/maps/landmarks.asm	164	0	db	ROUTE 11@	
-data.maps.landmarks:165:0	text	data/maps/landmarks.asm	165	0	db	ROUTE 12@	
-data.maps.landmarks:166:0	text	data/maps/landmarks.asm	166	0	db	ROUTE 13@	
-data.maps.landmarks:167:0	text	data/maps/landmarks.asm	167	0	db	ROUTE 14@	
-data.maps.landmarks:168:0	text	data/maps/landmarks.asm	168	0	db	ROUTE 15@	
-data.maps.landmarks:169:0	text	data/maps/landmarks.asm	169	0	db	ROUTE 16@	
-data.maps.landmarks:170:0	text	data/maps/landmarks.asm	170	0	db	ROUTE 17@	
-data.maps.landmarks:171:0	text	data/maps/landmarks.asm	171	0	db	ROUTE 18@	
-data.maps.landmarks:172:0	text	data/maps/landmarks.asm	172	0	db	ROUTE 19@	
-data.maps.landmarks:173:0	text	data/maps/landmarks.asm	173	0	db	ROUTE 20@	
-data.maps.landmarks:174:0	text	data/maps/landmarks.asm	174	0	db	ROUTE 21@	
-data.maps.landmarks:175:0	text	data/maps/landmarks.asm	175	0	db	ROUTE 22@	
-data.maps.landmarks:176:0	text	data/maps/landmarks.asm	176	0	db	ROUTE 23@	
-data.maps.landmarks:177:0	text	data/maps/landmarks.asm	177	0	db	ROUTE 24@	
-data.maps.landmarks:178:0	text	data/maps/landmarks.asm	178	0	db	ROUTE 25@	
-data.maps.landmarks:179:0	text	data/maps/landmarks.asm	179	0	db	ROUTE 26@	
-data.maps.landmarks:180:0	text	data/maps/landmarks.asm	180	0	db	ROUTE 27@	
-data.maps.landmarks:181:0	text	data/maps/landmarks.asm	181	0	db	ROUTE 28@	
-data.maps.landmarks:182:0	text	data/maps/landmarks.asm	182	0	db	ROUTE 29@	
-data.maps.landmarks:183:0	text	data/maps/landmarks.asm	183	0	db	ROUTE 30@	
-data.maps.landmarks:184:0	text	data/maps/landmarks.asm	184	0	db	ROUTE 31@	
-data.maps.landmarks:185:0	text	data/maps/landmarks.asm	185	0	db	ROUTE 32@	
-data.maps.landmarks:186:0	text	data/maps/landmarks.asm	186	0	db	ROUTE 33@	
-data.maps.landmarks:187:0	text	data/maps/landmarks.asm	187	0	db	ROUTE 34@	
-data.maps.landmarks:188:0	text	data/maps/landmarks.asm	188	0	db	ROUTE 35@	
-data.maps.landmarks:189:0	text	data/maps/landmarks.asm	189	0	db	ROUTE 36@	
-data.maps.landmarks:190:0	text	data/maps/landmarks.asm	190	0	db	ROUTE 37@	
-data.maps.landmarks:191:0	text	data/maps/landmarks.asm	191	0	db	ROUTE 38@	
-data.maps.landmarks:192:0	text	data/maps/landmarks.asm	192	0	db	ROUTE 39@	
-data.maps.landmarks:193:0	text	data/maps/landmarks.asm	193	0	db	ROUTE 40@	
-data.maps.landmarks:194:0	text	data/maps/landmarks.asm	194	0	db	ROUTE 41@	
-data.maps.landmarks:195:0	text	data/maps/landmarks.asm	195	0	db	ROUTE 42@	
-data.maps.landmarks:196:0	text	data/maps/landmarks.asm	196	0	db	ROUTE 43@	
-data.maps.landmarks:197:0	text	data/maps/landmarks.asm	197	0	db	ROUTE 44@	
-data.maps.landmarks:198:0	text	data/maps/landmarks.asm	198	0	db	ROUTE 45@	
-data.maps.landmarks:199:0	text	data/maps/landmarks.asm	199	0	db	ROUTE 46@	
-data.maps.landmarks:200:0	text	data/maps/landmarks.asm	200	0	db	DARK CAVE@	
-data.maps.landmarks:201:0	text	data/maps/landmarks.asm	201	0	db	ILEX<BSP>FOREST@	
-data.maps.landmarks:202:0	text	data/maps/landmarks.asm	202	0	db	BURNED<BSP>TOWER@	
-data.maps.landmarks:203:0	text	data/maps/landmarks.asm	203	0	db	FAST SHIP@	
-data.maps.landmarks:204:0	text	data/maps/landmarks.asm	204	0	db	VIRIDIAN<BSP>FOREST@	
-data.maps.landmarks:205:0	text	data/maps/landmarks.asm	205	0	db	DIGLETT's<BSP>CAVE@	
-data.maps.landmarks:206:0	text	data/maps/landmarks.asm	206	0	db	TOHJO FALLS@	
-data.maps.landmarks:207:0	text	data/maps/landmarks.asm	207	0	db	UNDERGROUND@	
-data.maps.landmarks:208:0	text	data/maps/landmarks.asm	208	0	db	SPECIAL@	
+data.maps.landmarks:134:0	text	data/maps/landmarks.asm	134	0	db	PALLET TOWN@	真新镇
+data.maps.landmarks:135:0	text	data/maps/landmarks.asm	135	0	db	VIRIDIAN<BSP>CITY@	常青市
+data.maps.landmarks:136:0	text	data/maps/landmarks.asm	136	0	db	PEWTER CITY@	深灰市
+data.maps.landmarks:137:0	text	data/maps/landmarks.asm	137	0	db	CERULEAN<BSP>CITY@	华蓝市
+data.maps.landmarks:138:0	text	data/maps/landmarks.asm	138	0	db	LAVENDER<BSP>TOWN@	紫苑镇
+data.maps.landmarks:139:0	text	data/maps/landmarks.asm	139	0	db	VERMILION<BSP>CITY@	枯叶市
+data.maps.landmarks:140:0	text	data/maps/landmarks.asm	140	0	db	CELADON<BSP>CITY@	玉虹市
+data.maps.landmarks:141:0	text	data/maps/landmarks.asm	141	0	db	SAFFRON<BSP>CITY@	金黄市
+data.maps.landmarks:142:0	text	data/maps/landmarks.asm	142	0	db	FUCHSIA<BSP>CITY@	浅红市
+data.maps.landmarks:143:0	text	data/maps/landmarks.asm	143	0	db	CINNABAR<BSP>ISLAND@	红莲岛
+data.maps.landmarks:144:0	text	data/maps/landmarks.asm	144	0	db	INDIGO<BSP>PLATEAU@	石英高原
+data.maps.landmarks:145:0	text	data/maps/landmarks.asm	145	0	db	VICTORY<BSP>ROAD@	冠军之路
+data.maps.landmarks:146:0	text	data/maps/landmarks.asm	146	0	db	MT.MOON@	月见山
+data.maps.landmarks:147:0	text	data/maps/landmarks.asm	147	0	db	ROCK TUNNEL@	岩山隧道
+data.maps.landmarks:148:0	text	data/maps/landmarks.asm	148	0	db	LAV<BSP>RADIO TOWER@	紫苑电台
+data.maps.landmarks:149:0	text	data/maps/landmarks.asm	149	0	db	SILPH CO.@	西尔佛公司
+data.maps.landmarks:150:0	text	data/maps/landmarks.asm	150	0	db	SAFARI ZONE@	狩猎地带
+data.maps.landmarks:151:0	text	data/maps/landmarks.asm	151	0	db	SEAFOAM<BSP>ISLANDS@	双子岛
+data.maps.landmarks:152:0	text	data/maps/landmarks.asm	152	0	db	#MON<BSP>MANSION@	宝可梦屋
+data.maps.landmarks:153:0	text	data/maps/landmarks.asm	153	0	db	CERULEAN<BSP>CAVE@	华蓝洞窟
+data.maps.landmarks:154:0	text	data/maps/landmarks.asm	154	0	db	ROUTE 1@	1号道路
+data.maps.landmarks:155:0	text	data/maps/landmarks.asm	155	0	db	ROUTE 2@	2号道路
+data.maps.landmarks:156:0	text	data/maps/landmarks.asm	156	0	db	ROUTE 3@	3号道路
+data.maps.landmarks:157:0	text	data/maps/landmarks.asm	157	0	db	ROUTE 4@	4号道路
+data.maps.landmarks:158:0	text	data/maps/landmarks.asm	158	0	db	ROUTE 5@	5号道路
+data.maps.landmarks:159:0	text	data/maps/landmarks.asm	159	0	db	ROUTE 6@	6号道路
+data.maps.landmarks:160:0	text	data/maps/landmarks.asm	160	0	db	ROUTE 7@	7号道路
+data.maps.landmarks:161:0	text	data/maps/landmarks.asm	161	0	db	ROUTE 8@	8号道路
+data.maps.landmarks:162:0	text	data/maps/landmarks.asm	162	0	db	ROUTE 9@	9号道路
+data.maps.landmarks:163:0	text	data/maps/landmarks.asm	163	0	db	ROUTE 10@	10号道路
+data.maps.landmarks:164:0	text	data/maps/landmarks.asm	164	0	db	ROUTE 11@	11号道路
+data.maps.landmarks:165:0	text	data/maps/landmarks.asm	165	0	db	ROUTE 12@	12号道路
+data.maps.landmarks:166:0	text	data/maps/landmarks.asm	166	0	db	ROUTE 13@	13号道路
+data.maps.landmarks:167:0	text	data/maps/landmarks.asm	167	0	db	ROUTE 14@	14号道路
+data.maps.landmarks:168:0	text	data/maps/landmarks.asm	168	0	db	ROUTE 15@	15号道路
+data.maps.landmarks:169:0	text	data/maps/landmarks.asm	169	0	db	ROUTE 16@	16号道路
+data.maps.landmarks:170:0	text	data/maps/landmarks.asm	170	0	db	ROUTE 17@	17号道路
+data.maps.landmarks:171:0	text	data/maps/landmarks.asm	171	0	db	ROUTE 18@	18号道路
+data.maps.landmarks:172:0	text	data/maps/landmarks.asm	172	0	db	ROUTE 19@	19号道路
+data.maps.landmarks:173:0	text	data/maps/landmarks.asm	173	0	db	ROUTE 20@	20号道路
+data.maps.landmarks:174:0	text	data/maps/landmarks.asm	174	0	db	ROUTE 21@	21号道路
+data.maps.landmarks:175:0	text	data/maps/landmarks.asm	175	0	db	ROUTE 22@	22号道路
+data.maps.landmarks:176:0	text	data/maps/landmarks.asm	176	0	db	ROUTE 23@	23号道路
+data.maps.landmarks:177:0	text	data/maps/landmarks.asm	177	0	db	ROUTE 24@	24号道路
+data.maps.landmarks:178:0	text	data/maps/landmarks.asm	178	0	db	ROUTE 25@	25号道路
+data.maps.landmarks:179:0	text	data/maps/landmarks.asm	179	0	db	ROUTE 26@	26号道路
+data.maps.landmarks:180:0	text	data/maps/landmarks.asm	180	0	db	ROUTE 27@	27号道路
+data.maps.landmarks:181:0	text	data/maps/landmarks.asm	181	0	db	ROUTE 28@	28号道路
+data.maps.landmarks:182:0	text	data/maps/landmarks.asm	182	0	db	ROUTE 29@	29号道路
+data.maps.landmarks:183:0	text	data/maps/landmarks.asm	183	0	db	ROUTE 30@	30号道路
+data.maps.landmarks:184:0	text	data/maps/landmarks.asm	184	0	db	ROUTE 31@	31号道路
+data.maps.landmarks:185:0	text	data/maps/landmarks.asm	185	0	db	ROUTE 32@	32号道路
+data.maps.landmarks:186:0	text	data/maps/landmarks.asm	186	0	db	ROUTE 33@	33号道路
+data.maps.landmarks:187:0	text	data/maps/landmarks.asm	187	0	db	ROUTE 34@	34号道路
+data.maps.landmarks:188:0	text	data/maps/landmarks.asm	188	0	db	ROUTE 35@	35号道路
+data.maps.landmarks:189:0	text	data/maps/landmarks.asm	189	0	db	ROUTE 36@	36号道路
+data.maps.landmarks:190:0	text	data/maps/landmarks.asm	190	0	db	ROUTE 37@	37号道路
+data.maps.landmarks:191:0	text	data/maps/landmarks.asm	191	0	db	ROUTE 38@	38号道路
+data.maps.landmarks:192:0	text	data/maps/landmarks.asm	192	0	db	ROUTE 39@	39号道路
+data.maps.landmarks:193:0	text	data/maps/landmarks.asm	193	0	db	ROUTE 40@	40号道路
+data.maps.landmarks:194:0	text	data/maps/landmarks.asm	194	0	db	ROUTE 41@	41号道路
+data.maps.landmarks:195:0	text	data/maps/landmarks.asm	195	0	db	ROUTE 42@	42号道路
+data.maps.landmarks:196:0	text	data/maps/landmarks.asm	196	0	db	ROUTE 43@	43号道路
+data.maps.landmarks:197:0	text	data/maps/landmarks.asm	197	0	db	ROUTE 44@	44号道路
+data.maps.landmarks:198:0	text	data/maps/landmarks.asm	198	0	db	ROUTE 45@	45号道路
+data.maps.landmarks:199:0	text	data/maps/landmarks.asm	199	0	db	ROUTE 46@	46号道路
+data.maps.landmarks:200:0	text	data/maps/landmarks.asm	200	0	db	DARK CAVE@	黑暗穴
+data.maps.landmarks:201:0	text	data/maps/landmarks.asm	201	0	db	ILEX<BSP>FOREST@	栎树林
+data.maps.landmarks:202:0	text	data/maps/landmarks.asm	202	0	db	BURNED<BSP>TOWER@	烧焦塔
+data.maps.landmarks:203:0	text	data/maps/landmarks.asm	203	0	db	FAST SHIP@	高速船
+data.maps.landmarks:204:0	text	data/maps/landmarks.asm	204	0	db	VIRIDIAN<BSP>FOREST@	常青森林
+data.maps.landmarks:205:0	text	data/maps/landmarks.asm	205	0	db	DIGLETT's<BSP>CAVE@	地鼠洞穴
+data.maps.landmarks:206:0	text	data/maps/landmarks.asm	206	0	db	TOHJO FALLS@	都城瀑布
+data.maps.landmarks:207:0	text	data/maps/landmarks.asm	207	0	db	UNDERGROUND@	地下通道
+data.maps.landmarks:208:0	text	data/maps/landmarks.asm	208	0	db	SPECIAL@	特殊
 data.mon_menu:15:0	menu	data/mon_menu.asm	15	0	li	STATS	状态
 data.mon_menu:16:0	menu	data/mon_menu.asm	16	0	li	SWITCH	换位
 data.mon_menu:17:0	menu	data/mon_menu.asm	17	0	li	ITEM	道具
@@ -1795,28 +1795,28 @@ data.phone.text.elm:205:0	text	data/phone/text/elm.asm	205	0	line	something neat
 data.phone.text.elm:207:0	text	data/phone/text/elm.asm	207	0	para	Swing by my LAB	
 data.phone.text.elm:208:0	text	data/phone/text/elm.asm	208	0	line	and pick it up!	
 data.phone.text.elm:210:0	text	data/phone/text/elm.asm	210	0	para	See you later!	
-data.phone.text.landmarks:1:0	text	data/phone/text/landmarks.asm	1	0	db	NATIONAL PARK@	
-data.phone.text.landmarks:2:0	text	data/phone/text/landmarks.asm	2	0	db	LIGHTHOUSE@	
-data.phone.text.landmarks:3:0	text	data/phone/text/landmarks.asm	3	0	db	UNDERGROUND@	
-data.phone.text.landmarks:4:0	text	data/phone/text/landmarks.asm	4	0	db	DARK CAVE@	
-data.phone.text.landmarks:5:0	text	data/phone/text/landmarks.asm	5	0	db	MT.MORTAR@	
-data.phone.text.landmarks:6:0	text	data/phone/text/landmarks.asm	6	0	db	ROUTE 26@	
-data.phone.text.landmarks:7:0	text	data/phone/text/landmarks.asm	7	0	db	ROUTE 27@	
-data.phone.text.landmarks:8:0	text	data/phone/text/landmarks.asm	8	0	db	ROUTE 30@	
-data.phone.text.landmarks:9:0	text	data/phone/text/landmarks.asm	9	0	db	ROUTE 31@	
-data.phone.text.landmarks:10:0	text	data/phone/text/landmarks.asm	10	0	db	ROUTE 32@	
-data.phone.text.landmarks:11:0	text	data/phone/text/landmarks.asm	11	0	db	ROUTE 33@	
-data.phone.text.landmarks:12:0	text	data/phone/text/landmarks.asm	12	0	db	ROUTE 34@	
-data.phone.text.landmarks:13:0	text	data/phone/text/landmarks.asm	13	0	db	ROUTE 35@	
-data.phone.text.landmarks:14:0	text	data/phone/text/landmarks.asm	14	0	db	ROUTE 36@	
-data.phone.text.landmarks:15:0	text	data/phone/text/landmarks.asm	15	0	db	ROUTE 37@	
-data.phone.text.landmarks:16:0	text	data/phone/text/landmarks.asm	16	0	db	ROUTE 38@	
-data.phone.text.landmarks:17:0	text	data/phone/text/landmarks.asm	17	0	db	ROUTE 39@	
-data.phone.text.landmarks:18:0	text	data/phone/text/landmarks.asm	18	0	db	ROUTE 42@	
-data.phone.text.landmarks:19:0	text	data/phone/text/landmarks.asm	19	0	db	ROUTE 43@	
-data.phone.text.landmarks:20:0	text	data/phone/text/landmarks.asm	20	0	db	ROUTE 44@	
-data.phone.text.landmarks:21:0	text	data/phone/text/landmarks.asm	21	0	db	ROUTE 45@	
-data.phone.text.landmarks:22:0	text	data/phone/text/landmarks.asm	22	0	db	ROUTE 46@	
+data.phone.text.landmarks:1:0	text	data/phone/text/landmarks.asm	1	0	db	NATIONAL PARK@	自然公园
+data.phone.text.landmarks:2:0	text	data/phone/text/landmarks.asm	2	0	db	LIGHTHOUSE@	浅葱灯塔
+data.phone.text.landmarks:3:0	text	data/phone/text/landmarks.asm	3	0	db	UNDERGROUND@	地下通道
+data.phone.text.landmarks:4:0	text	data/phone/text/landmarks.asm	4	0	db	DARK CAVE@	黑暗穴
+data.phone.text.landmarks:5:0	text	data/phone/text/landmarks.asm	5	0	db	MT.MORTAR@	擂钵山
+data.phone.text.landmarks:6:0	text	data/phone/text/landmarks.asm	6	0	db	ROUTE 26@	26号道路
+data.phone.text.landmarks:7:0	text	data/phone/text/landmarks.asm	7	0	db	ROUTE 27@	27号道路
+data.phone.text.landmarks:8:0	text	data/phone/text/landmarks.asm	8	0	db	ROUTE 30@	30号道路
+data.phone.text.landmarks:9:0	text	data/phone/text/landmarks.asm	9	0	db	ROUTE 31@	31号道路
+data.phone.text.landmarks:10:0	text	data/phone/text/landmarks.asm	10	0	db	ROUTE 32@	32号道路
+data.phone.text.landmarks:11:0	text	data/phone/text/landmarks.asm	11	0	db	ROUTE 33@	33号道路
+data.phone.text.landmarks:12:0	text	data/phone/text/landmarks.asm	12	0	db	ROUTE 34@	34号道路
+data.phone.text.landmarks:13:0	text	data/phone/text/landmarks.asm	13	0	db	ROUTE 35@	35号道路
+data.phone.text.landmarks:14:0	text	data/phone/text/landmarks.asm	14	0	db	ROUTE 36@	36号道路
+data.phone.text.landmarks:15:0	text	data/phone/text/landmarks.asm	15	0	db	ROUTE 37@	37号道路
+data.phone.text.landmarks:16:0	text	data/phone/text/landmarks.asm	16	0	db	ROUTE 38@	38号道路
+data.phone.text.landmarks:17:0	text	data/phone/text/landmarks.asm	17	0	db	ROUTE 39@	39号道路
+data.phone.text.landmarks:18:0	text	data/phone/text/landmarks.asm	18	0	db	ROUTE 42@	42号道路
+data.phone.text.landmarks:19:0	text	data/phone/text/landmarks.asm	19	0	db	ROUTE 43@	43号道路
+data.phone.text.landmarks:20:0	text	data/phone/text/landmarks.asm	20	0	db	ROUTE 44@	44号道路
+data.phone.text.landmarks:21:0	text	data/phone/text/landmarks.asm	21	0	db	ROUTE 45@	45号道路
+data.phone.text.landmarks:22:0	text	data/phone/text/landmarks.asm	22	0	db	ROUTE 46@	46号道路
 data.phone.text.mom:2:0	text	data/phone/text/mom.asm	2	0	text	Hello?	
 data.phone.text.mom:4:0	text	data/phone/text/mom.asm	4	0	para	Oh, hi, <PLAYER>!	
 data.phone.text.mom:5:0	text	data/phone/text/mom.asm	5	0	line	Working hard?	

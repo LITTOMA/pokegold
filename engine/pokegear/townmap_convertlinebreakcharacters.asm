@@ -15,10 +15,7 @@ TownMap_ConvertLineBreakCharacters:
 	ld [hl], '<LF>'
 
 .end
-	ld a, [wStringBuffer1]
-	cp '<CN>'
-	jr c, .regular
-	cp '<BSP>'
+	call .StringContainsChinese
 	jr nc, .regular
 	ld a, 1
 	ldh [hChineseFontTownMap], a
@@ -37,4 +34,20 @@ TownMap_ConvertLineBreakCharacters:
 	ld de, wStringBuffer1
 	hlcoord 9, 0
 	call PlaceString
+	ret
+
+.StringContainsChinese:
+	ld hl, wStringBuffer1
+.scan
+	ld a, [hli]
+	cp '@'
+	jr z, .no_chinese
+	cp '<CN>'
+	jr c, .scan
+	cp '<BSP>'
+	jr nc, .scan
+	scf
+	ret
+.no_chinese
+	and a
 	ret

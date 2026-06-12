@@ -719,15 +719,40 @@ PokegearMap_UpdateLandmarkName:
 	lb bc, 2, 12
 	xor a
 	call .FillLandmarkNameAttrBox
-	ld a, [wStringBuffer1]
-	cp '<CN>'
-	ret c
-	cp '<BSP>'
-	ret nc
 	hlcoord 9, 0, wAttrmap
-	lb bc, 2, 11
+	ld de, wStringBuffer1
+.attr_scan
+	ld a, [de]
+	cp '@'
+	ret z
+	cp '<LF>'
+	jr z, .attr_line_feed
+	cp '<CN>'
+	jr c, .attr_regular_char
+	cp '<BSP>'
+	jr nc, .attr_regular_char
+	push hl
 	ld a, BG_ATTR_VRAM_BANK_1
-	call .FillLandmarkNameAttrBox
+	ld [hli], a
+	ld [hl], a
+	ld bc, SCREEN_WIDTH - 1
+	add hl, bc
+	ld [hli], a
+	ld [hl], a
+	pop hl
+	inc hl
+	inc hl
+	inc de
+	inc de
+	jr .attr_scan
+.attr_regular_char
+	inc hl
+	inc de
+	jr .attr_scan
+.attr_line_feed
+	hlcoord 9, 1, wAttrmap
+	inc de
+	jr .attr_scan
 	ret
 
 .FillLandmarkNameAttrBox:

@@ -1,5 +1,5 @@
 GetChineseFontTile::
-; Cache the current Chinese glyph in VRAM bank 1 and store its tile id.
+; Cache the current Chinese glyph in VRAM and store its tile id.
 	ldh a, [hChineseFontCacheInitialized]
 	and a
 	jr nz, .cache_ready
@@ -11,27 +11,86 @@ GetChineseFontTile::
 .init_town_map_cache
 	call InitChineseTownMapFontCache
 .cache_ready
-	ldh a, [hChineseFontCacheNext]
-	ld c, a
-	inc a
-	push af
+	di
+	ldh a, [rSVBK]
+	ldh [hChineseFontCacheSavedSVBK], a
+	ld a, CHINESE_FONT_CACHE_WRAM_BANK
+	ldh [rSVBK], a
+
+	ld hl, wChineseFontCache
+	ld c, 0
+	ldh a, [hChineseGlyphIndex]
+	ld d, a
+	ldh a, [hChineseGlyphIndex + 1]
+	ld e, a
 	ldh a, [hChineseFontTownMap]
 	and a
-	pop af
+	jr nz, .town_map_scan
+	ld b, CHINESE_FONT_CACHE_CHARS
+	jr .scan_cache
+.town_map_scan
+	ld b, CHINESE_TOWN_MAP_FONT_CACHE_CHARS
+.scan_cache
+	ld a, [hli]
+	cp d
+	jr nz, .next_cache_entry
+	ld a, [hl]
+	cp e
+	jr z, .cache_hit
+.next_cache_entry
+	inc hl
+	inc c
+	dec b
+	jr nz, .scan_cache
+
+	ldh a, [hChineseFontCacheNext]
+	ld c, a
+	ld hl, wChineseFontCache
+	ld a, c
+	and a
+	jr z, .store_cache_entry
+.cache_slot_loop
+	inc hl
+	inc hl
+	dec a
+	jr nz, .cache_slot_loop
+.store_cache_entry
+	ld a, d
+	ld [hli], a
+	ld a, e
+	ld [hl], a
+
+	ld a, c
+	inc a
+	ld d, a
+	ldh a, [hChineseFontTownMap]
+	and a
+	ld a, d
 	jr nz, .check_town_map_next
 	cp CHINESE_FONT_CACHE_CHARS
-	jr c, .next_cache_slot
+	jr c, .store_next_cache_slot
 	xor a
-	jr .next_cache_slot
+	jr .store_next_cache_slot
 .check_town_map_next
 	cp CHINESE_TOWN_MAP_FONT_CACHE_CHARS
-	jr c, .next_cache_slot
+	jr c, .store_next_cache_slot
 	xor a
-.next_cache_slot
+.store_next_cache_slot
 	ldh [hChineseFontCacheNext], a
+
+	ldh a, [hChineseFontCacheSavedSVBK]
+	ldh [rSVBK], a
+	ei
 	push bc
 	call LoadChineseGlyph
 	pop bc
+	jr .got_cache_slot
+
+.cache_hit
+	ldh a, [hChineseFontCacheSavedSVBK]
+	ldh [rSVBK], a
+	ei
+.got_cache_slot
 	ldh a, [hChineseFontTownMap]
 	and a
 	ld a, c
@@ -174,6 +233,7 @@ LoadChineseGlyph:
 	jp Request1bpp
 
 InitChineseFontCache::
+	call ClearChineseFontCache
 	xor a
 	ldh [hChineseFontCacheNext], a
 	ld a, 1
@@ -181,8 +241,27 @@ InitChineseFontCache::
 	ret
 
 InitChineseTownMapFontCache::
+	call ClearChineseFontCache
 	xor a
 	ldh [hChineseFontCacheNext], a
 	ld a, 1
 	ldh [hChineseFontCacheInitialized], a
+	ret
+
+ClearChineseFontCache:
+	di
+	ldh a, [rSVBK]
+	ldh [hChineseFontCacheSavedSVBK], a
+	ld a, CHINESE_FONT_CACHE_WRAM_BANK
+	ldh [rSVBK], a
+	ld hl, wChineseFontCache
+	ld b, CHINESE_FONT_CACHE_CHARS * 2
+	ld a, CHINESE_FONT_CACHE_EMPTY
+.clear
+	ld [hli], a
+	dec b
+	jr nz, .clear
+	ldh a, [hChineseFontCacheSavedSVBK]
+	ldh [rSVBK], a
+	ei
 	ret

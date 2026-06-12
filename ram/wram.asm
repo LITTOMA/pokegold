@@ -397,6 +397,11 @@ wUnusedMapBuffer:: ds 24
 wUnusedMapBufferEnd::
 
 
+SECTION "Chinese Font Cache", WRAMX, BANK[CHINESE_FONT_CACHE_WRAM_BANK]
+
+wChineseFontCache:: ds CHINESE_FONT_CACHE_CHARS * 2
+
+
 SECTION UNION "Overworld Map", WRAM0
 
 ; overworld map blocks
