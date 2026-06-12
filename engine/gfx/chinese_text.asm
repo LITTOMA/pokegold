@@ -3,51 +3,35 @@ GetChineseFontTile::
 	ldh a, [hChineseFontCacheInitialized]
 	and a
 	jr nz, .cache_ready
+	ldh a, [hChineseFontTownMap]
+	and a
+	jr nz, .init_town_map_cache
 	call InitChineseFontCache
+	jr .cache_ready
+.init_town_map_cache
+	call InitChineseTownMapFontCache
 .cache_ready
-	ldh a, [hChineseGlyphIndex]
-	ld e, a
-	ldh a, [hChineseGlyphIndex + 1]
-	ld d, a
-	ld hl, wChineseFontCache
-	ld c, 0
-	ld b, CHINESE_FONT_CACHE_CHARS
-.search
-	ld a, [hl]
-	cp e
-	jr nz, .next
-	inc hl
-	ld a, [hld]
-	cp d
-	jr z, .hit
-.next
-	inc hl
-	inc hl
-	inc c
-	dec b
-	jr nz, .search
-
 	ldh a, [hChineseFontCacheNext]
 	ld c, a
 	inc a
+	push af
+	ldh a, [hChineseFontTownMap]
+	and a
+	pop af
+	jr nz, .check_town_map_next
 	cp CHINESE_FONT_CACHE_CHARS
+	jr c, .next_cache_slot
+	xor a
+	jr .next_cache_slot
+.check_town_map_next
+	cp CHINESE_TOWN_MAP_FONT_CACHE_CHARS
 	jr c, .next_cache_slot
 	xor a
 .next_cache_slot
 	ldh [hChineseFontCacheNext], a
-	ld h, 0
-	ld l, c
-	add hl, hl
-	ld de, wChineseFontCache
-	add hl, de
-	ldh a, [hChineseGlyphIndex]
-	ld [hli], a
-	ldh a, [hChineseGlyphIndex + 1]
-	ld [hl], a
 	push bc
 	call LoadChineseGlyph
 	pop bc
-.hit
 	ldh a, [hChineseFontTownMap]
 	and a
 	ld a, c
@@ -192,13 +176,13 @@ LoadChineseGlyph:
 InitChineseFontCache::
 	xor a
 	ldh [hChineseFontCacheNext], a
-	ld hl, wChineseFontCache
-	ld b, CHINESE_FONT_CACHE_CHARS * 2
-	ld a, CHINESE_FONT_CACHE_EMPTY
-.clear
-	ld [hli], a
-	dec b
-	jr nz, .clear
+	ld a, 1
+	ldh [hChineseFontCacheInitialized], a
+	ret
+
+InitChineseTownMapFontCache::
+	xor a
+	ldh [hChineseFontCacheNext], a
 	ld a, 1
 	ldh [hChineseFontCacheInitialized], a
 	ret
