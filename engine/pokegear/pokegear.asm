@@ -548,6 +548,7 @@ Pokegear_UpdateClock:
 	ld hl, .GearTodayText
 	bccoord 6, 6
 	call PrintTextboxTextAt
+	call Pokegear_SetClockAttrs
 	ret
 
 	db "ごぜん@"
@@ -556,6 +557,42 @@ Pokegear_UpdateClock:
 .GearTodayText:
 	text_far _GearTodayText
 	text_end
+
+Pokegear_SetClockAttrs:
+	hlcoord 3, 5, wAttrmap
+	lb bc, 5, 14
+	xor a
+	call .FillBox
+	hlcoord 13, 1, wAttrmap
+	lb bc, 2, 5
+	xor a
+	call .FillBox
+	hlcoord 13, 1, wAttrmap
+	lb bc, 2, 4 ; switch label
+	ld a, BG_ATTR_VRAM_BANK_1
+	call .FillBox
+	hlcoord 6, 6, wAttrmap
+	lb bc, 2, 6 ; weekday
+	ld a, BG_ATTR_VRAM_BANK_1
+	call .FillBox
+	hlcoord 12, 8, wAttrmap
+	lb bc, 2, 4 ; AM/PM
+	ld a, BG_ATTR_VRAM_BANK_1
+.FillBox:
+	ld de, SCREEN_WIDTH
+.row
+	push bc
+	push hl
+.col
+	ld [hli], a
+	dec c
+	jr nz, .col
+	pop hl
+	add hl, de
+	pop bc
+	dec b
+	jr nz, .row
+	ret
 
 PokegearSwitchText:
 	db "SWITCH▶@"
