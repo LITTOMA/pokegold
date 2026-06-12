@@ -143,6 +143,9 @@ TrainerCard_SetTopTextAttrs:
 	hlcoord 6, 1, wAttrmap
 	lb bc, 1, 1
 	call TrainerCard_SetTextAttrBox
+	hlcoord 6, 2, wAttrmap
+	lb bc, 1, 1
+	call TrainerCard_SetTextAttrBox
 	hlcoord 7, 2, wAttrmap
 	lb bc, 1, 7
 	call TrainerCard_SetTextAttrBox
@@ -175,6 +178,9 @@ TrainerCard_SetPage1TextAttrs:
 	lb bc, 1, 7
 	call TrainerCard_SetTextAttrBox
 	hlcoord 16, 15, wAttrmap
+	lb bc, 1, 1
+	call TrainerCard_SetTextAttrBox
+	hlcoord 16, 16, wAttrmap
 	lb bc, 1, 1
 	jp TrainerCard_SetTextAttrBox
 
