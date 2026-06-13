@@ -9156,7 +9156,7 @@ engine.menus.start_menu:212:0	menu	engine/menus/start_menu.asm	212	0	db	Trainer'
 engine.menus.start_menu:213:0	menu	engine/menus/start_menu.asm	213	0	next	key device@	装置
 engine.menus.start_menu:216:0	menu	engine/menus/start_menu.asm	216	0	db	Your own	自己的
 engine.menus.start_menu:217:0	menu	engine/menus/start_menu.asm	217	0	next	status@	状态
-engine.menus.start_menu:220:0	menu	engine/menus/start_menu.asm	220	0	db	Save your	保存你的
+engine.menus.start_menu:220:0	menu	engine/menus/start_menu.asm	220	0	db	Save your	保存
 engine.menus.start_menu:221:0	menu	engine/menus/start_menu.asm	221	0	next	progress@	进度
 engine.menus.start_menu:224:0	menu	engine/menus/start_menu.asm	224	0	db	Change	更改
 engine.menus.start_menu:225:0	menu	engine/menus/start_menu.asm	225	0	next	settings@	设定
