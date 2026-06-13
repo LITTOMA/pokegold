@@ -66,10 +66,11 @@ TrainerCard:
 	call TrainerCard_InitBorder
 
 	call EnableLCD
-	call CGBOnly_CopyTilemapAtOnce
+	call WaitBGMap
 	ld b, SCGB_TRAINER_CARD
 	call GetSGBLayout
 	call SetDefaultBGPAndOBP
+	call WaitBGMap
 	call TrainerCard_SetTopAttrs
 	call CGBOnly_CopyTilemapAtOnce
 	call WaitBGMap
