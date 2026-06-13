@@ -197,6 +197,7 @@ def read_translations(path: Path) -> dict[str, str]:
 
 def normalize_translation(text: str, source: str = "") -> str:
     text = text.replace(r"\n", "<LF>")
+    text = text.replace("<SP>", " ")
     if source.endswith("@") and text and not text.endswith("@"):
         text += "@"
     return text
